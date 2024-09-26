@@ -3,7 +3,6 @@ import { createSignerFromKeypair, signerIdentity } from "@metaplex-foundation/um
 // import { irysUploader } from "@metaplex-foundation/umi-uploader-irys";
 import { mockStorage } from '@metaplex-foundation/umi-storage-mock';
 
-import wallet from "../wallet.json";
 
 const umi = createUmi("https://api.devnet.solana.com", "finalized")
 

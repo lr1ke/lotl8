@@ -28,7 +28,7 @@ const handleMintClick = async () => {
     console.log("Minting NFT...");
     console.log("Wallet", wallet);
     try {
-        const myUri = await upLoadText();
+        const myUri = await upLoadText(wallet);
         console.log("Uploaded Text:", myUri);
         setMyUri(myUri);
       } catch (error) {

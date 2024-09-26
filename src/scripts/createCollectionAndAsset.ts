@@ -4,7 +4,7 @@
 
 import { generateSigner, percentAmount, createSignerFromKeypair, signerIdentity } from '@metaplex-foundation/umi'
 import { base58 } from '@metaplex-foundation/umi/serializers';
-import { createCollectionV1, createPlugin, createV1, pluginAuthority, ruleSet, fetchAssetV1, fetchCollectionV1} from '@metaplex-foundation/mpl-core'
+import { createCollection, create, pluginAuthority, ruleSet, fetchAsset, fetchCollection} from '@metaplex-foundation/mpl-core'
 import { createUmi } from '@metaplex-foundation/umi-bundle-defaults';
 import { walletAdapterIdentity } from '@metaplex-foundation/umi-signer-wallet-adapters';
 
@@ -20,18 +20,26 @@ umi.use(walletAdapterIdentity(wallet));
     console.log("Collection Address: \n", collection.publicKey.toString())
 
     // Generate the collection
-    const collectinTx = await createCollectionV1(umi, {
+    const collectionTx = await createCollection(umi, {
         collection: collection,
         name: 'My Collection',
-        uri: myUri
+        uri: myUri,
+        plugins: [
+            {
+                type: "PermanentFreezeDelegate",
+                frozen: true,
+                authority: { type: "None" }
+            }
+        ]
+
     }).sendAndConfirm(umi)
 
     // Deserialize the Signature from the Transaction
-    let signature = base58.deserialize(collectinTx.signature)[0];
+    let signature = base58.deserialize(collectionTx.signature)[0];
     console.log(signature);
 
     // Fetch the Collection to verify that has been created
-    let fetchedCollection = await fetchCollectionV1(umi, collection.publicKey);
+    let fetchedCollection = await fetchCollection(umi, collection.publicKey);
     console.log("Verify that the Collection has been Minted: \n", fetchedCollection);
 
     // Generate the Asset PublicKey
@@ -39,11 +47,11 @@ umi.use(walletAdapterIdentity(wallet));
     console.log(asset.publicKey.toString())
 
     // Generate the Asset
-    const assetTx = await createV1(umi, {
+    const assetTx = await create(umi, {
+        asset,
+        collection,
         name: 'My NFT',
         uri: myUri,
-        asset: asset,
-        collection: collection.publicKey, // collection to which the asset belongs collection: publicKey("...")
     }).sendAndConfirm(umi);
 
     // Deserialize the Signature from the Transaction
@@ -51,12 +59,15 @@ umi.use(walletAdapterIdentity(wallet));
     console.log(signature);
 
     // Fetch the Asset to verify that has been created
-    const fetchedAsset = await fetchAssetV1(umi, asset.publicKey);
+    const fetchedAsset = await fetchAsset(umi, asset.publicKey);
     console.log("Verify that the Asset has been Minted: \n", fetchedAsset);
+    console.log("Asset Created: https://solana.fm/tx/" + base58.deserialize(assetTx.signature)[0] + "?cluster=devnet-alpha");
+
 
     // Fetch the Collection again to verify that the Asset has been added
-    fetchedCollection = await fetchCollectionV1(umi, collection.publicKey);
+    fetchedCollection = await fetchCollection(umi, collection.publicKey);
     console.log("Verify that the Asset has been Added to the collection: \n", fetchedCollection);
+    
 
     return {
         collectionAddress: collection.publicKey.toString(),
