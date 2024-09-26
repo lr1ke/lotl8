@@ -1,18 +1,19 @@
+
+
+
+
 import { generateSigner, percentAmount, createSignerFromKeypair, signerIdentity } from '@metaplex-foundation/umi'
-import { createUmi } from '@metaplex-foundation/umi-bundle-defaults'
 import { base58 } from '@metaplex-foundation/umi/serializers';
 import { createCollectionV1, createPlugin, createV1, pluginAuthority, ruleSet, fetchAssetV1, fetchCollectionV1} from '@metaplex-foundation/mpl-core'
+import { createUmi } from '@metaplex-foundation/umi-bundle-defaults';
+import { walletAdapterIdentity } from '@metaplex-foundation/umi-signer-wallet-adapters';
 
-import wallet from "@/wallet.json";
 
+export const mintNFT = async (myUri: string, wallet: any) => {
 
-export const mintNFT = async (myUri: string ) => {
-
-const umi = createUmi("https://api.devnet.solana.com", "finalized")
-let keypair = umi.eddsa.createKeypairFromSecretKey(new Uint8Array(wallet));
-const myKeypairSigner = createSignerFromKeypair(umi, keypair);
-umi.use(signerIdentity(myKeypairSigner));
-
+const umi = createUmi('https://api.devnet.solana.com')
+// Register Wallet Adapter to Umi
+umi.use(walletAdapterIdentity(wallet));
 
     // Generate the Collection PublicKey
     const collection = generateSigner(umi)

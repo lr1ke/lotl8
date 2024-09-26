@@ -6,13 +6,27 @@ import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 import { mintNFT } from "@/scripts/createCollectionAndAsset";
 import { upLoadText } from "@/scripts/uploadText";
 import { upLoadMetadata } from "@/scripts/assetMetadata";
+import { ConnectWallet } from "@/components/ui/ConnectWallet";
+import { createUmi } from '@metaplex-foundation/umi-bundle-defaults';
+import { walletAdapterIdentity } from '@metaplex-foundation/umi-signer-wallet-adapters';
+
+
 
 const Echoing = () => {
     const [myUri, setMyUri] = useState("");
     // const [metadataUri, setMetadataUri] = useState("");
+    const wallet = useWallet();
+    // const umi = createUmi('https://api.devnet.solana.com');
+    // // Register Wallet Adapter to Umi
+    // umi.use(walletAdapterIdentity(wallet));
 
 
-  const handleMintClick = async () => {
+
+
+
+const handleMintClick = async () => {
+    console.log("Minting NFT...");
+    console.log("Wallet", wallet);
     try {
         const myUri = await upLoadText();
         console.log("Uploaded Text:", myUri);
@@ -30,13 +44,14 @@ const Echoing = () => {
 
 
     try { 
-      const { collectionAddress, assetAddress } = await mintNFT(myUri);
+      const { collectionAddress, assetAddress } = await mintNFT(myUri, wallet);
       console.log("Collection Address:", collectionAddress);
       console.log("Asset Address:", assetAddress);
     } catch (error) {
       console.error("Error during NFT minting:", error);
     }
   };
+
 
   const handleUploadTextClick = async () => {
     try {
@@ -65,6 +80,8 @@ const Echoing = () => {
       >
         Upload Text
       </button>
+      <ConnectWallet />
+
     </>
   );
 };

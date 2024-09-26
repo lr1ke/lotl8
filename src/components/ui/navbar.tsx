@@ -1,7 +1,7 @@
 
 
 import React from 'react';
-import { ConnectWallet } from "@/components/ui/ConnectWallet";
+// import { ConnectWallet } from "@/components/ui/ConnectWallet";
 
 export default function Navbar() {
   return (
@@ -15,7 +15,7 @@ export default function Navbar() {
           <a href="/" className="text-gray-300 hover:text-white">Echolot-y</a>
           <a href="/library" className="text-gray-300 hover:text-white">Echolot-i</a>
           <a href="/echoing" className="text-gray-300 hover:text-white">Echoing</a>
-          <ConnectWallet />
+          {/* <ConnectWallet /> */}
         </div>
       </div>
     </nav>

@@ -16,6 +16,8 @@ export const ConnectWallet: React.FC = () => {
   useEffect(() => {
     if (connected) {
       console.log("Connected to Phantom Wallet", publicKey?.toString());
+      console.log("Wallet info", wallet);
+      console.log("Wallet connected", connected);
     }
   }, [connected, publicKey]);
 
