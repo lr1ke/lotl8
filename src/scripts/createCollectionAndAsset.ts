@@ -9,7 +9,7 @@ import { createUmi } from '@metaplex-foundation/umi-bundle-defaults';
 import { walletAdapterIdentity } from '@metaplex-foundation/umi-signer-wallet-adapters';
 
 
-export const mintNFT = async (myUri: string, wallet: any) => {
+export const mintNFT = async (metadataUri: string, wallet: any) => {
 
 const umi = createUmi('https://api.devnet.solana.com')
 // Register Wallet Adapter to Umi
@@ -23,7 +23,7 @@ umi.use(walletAdapterIdentity(wallet));
     const collectionTx = await createCollection(umi, {
         collection: collection,
         name: 'My Collection',
-        uri: myUri,
+        uri: metadataUri,
         plugins: [
             {
                 type: "PermanentFreezeDelegate",
@@ -51,7 +51,7 @@ umi.use(walletAdapterIdentity(wallet));
         asset,
         collection,
         name: 'My NFT',
-        uri: myUri,
+        uri: metadataUri,
     }).sendAndConfirm(umi);
 
     // Deserialize the Signature from the Transaction
@@ -59,7 +59,7 @@ umi.use(walletAdapterIdentity(wallet));
     console.log(signature);
 
     // Fetch the Asset to verify that has been created
-    const fetchedAsset = await fetchAsset(umi, asset.publicKey);
+    const fetchedAsset = await fetchAsset(umi, asset.publicKey.toString());
     console.log("Verify that the Asset has been Minted: \n", fetchedAsset);
     console.log("Asset Created: https://solana.fm/tx/" + base58.deserialize(assetTx.signature)[0] + "?cluster=devnet-alpha");
 

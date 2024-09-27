@@ -4,20 +4,21 @@ import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
 import { createGenericFile } from "@metaplex-foundation/umi";
 import { mockStorage } from '@metaplex-foundation/umi-storage-mock';
 import { walletAdapterIdentity } from '@metaplex-foundation/umi-signer-wallet-adapters';
+import { irysUploader } from "@metaplex-foundation/umi-uploader-irys";
 
 
 
-export const upLoadText = async (wallet: any) => {
+
+export const uploadText = async (wallet: any): Promise<string> => {
 
 const umi = createUmi("https://api.devnet.solana.com", "confirmed")
-umi.use(mockStorage());
-// Register Wallet Adapter to Umi
+umi.use(irysUploader());
 umi.use(walletAdapterIdentity(wallet));
 
     const note = "Ein rosaroter Sommermontag"
     const myFile = createGenericFile(note, "TestNFT")
 
-    const [myUri] = await umi.uploader.upload([myFile]);
-    console.log(myUri);
-    return myUri;
+    const [noteUri] = await umi.uploader.upload([myFile]);
+    console.log(noteUri);
+    return noteUri;
 }
