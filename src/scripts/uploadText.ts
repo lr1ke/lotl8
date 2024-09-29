@@ -1,7 +1,7 @@
+//upload note to aarweave
 
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
 import { createGenericFile, createSignerFromKeypair, signerIdentity } from "@metaplex-foundation/umi"
-import { walletAdapterIdentity } from '@metaplex-foundation/umi-signer-wallet-adapters';
 import { irysUploader } from "@metaplex-foundation/umi-uploader-irys";
 
 

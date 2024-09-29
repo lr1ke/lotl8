@@ -1,3 +1,4 @@
+//Create soulbound nft collection, asset
 
 import { generateSigner, percentAmount, createSignerFromKeypair, signerIdentity } from '@metaplex-foundation/umi'
 import { base58 } from '@metaplex-foundation/umi/serializers';

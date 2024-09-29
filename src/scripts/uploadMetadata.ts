@@ -1,3 +1,4 @@
+//upload metadata to aarweave
 
 
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
