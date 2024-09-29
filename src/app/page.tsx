@@ -96,7 +96,7 @@ export default function Home() {
           <a
             className="flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
             // link to some info page, copyright, ...?
-            href="https://ctrlx.world/"
+            href=""
             target="_blank"
             rel="noopener noreferrer"
           >

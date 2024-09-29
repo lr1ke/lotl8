@@ -1,7 +1,4 @@
 
-
-
-
 import { generateSigner, percentAmount, createSignerFromKeypair, signerIdentity } from '@metaplex-foundation/umi'
 import { base58 } from '@metaplex-foundation/umi/serializers';
 import { createCollection, create, pluginAuthority, ruleSet, fetchAsset, fetchCollection} from '@metaplex-foundation/mpl-core'
@@ -9,8 +6,7 @@ import { createUmi } from '@metaplex-foundation/umi-bundle-defaults';
 import { walletAdapterIdentity } from '@metaplex-foundation/umi-signer-wallet-adapters';
 
 
-export const mintNFT = async (metadataUri: string, wallet: any) => {
-
+export const mintNFT = async ( metadataUri: any, wallet: any) => {
 const umi = createUmi('https://api.devnet.solana.com')
 // Register Wallet Adapter to Umi
 umi.use(walletAdapterIdentity(wallet));
@@ -18,6 +14,7 @@ umi.use(walletAdapterIdentity(wallet));
     // Generate the Collection PublicKey
     const collection = generateSigner(umi)
     console.log("Collection Address: \n", collection.publicKey.toString())
+    console.log('metadataUri 2:', metadataUri)
 
     // Generate the collection
     const collectionTx = await createCollection(umi, {
@@ -44,7 +41,7 @@ umi.use(walletAdapterIdentity(wallet));
 
     // Generate the Asset PublicKey
     const asset = generateSigner(umi)
-    console.log(asset.publicKey.toString())
+    console.log("Asset Address: \n", asset.publicKey.toString())
 
     // Generate the Asset
     const assetTx = await create(umi, {
@@ -53,10 +50,11 @@ umi.use(walletAdapterIdentity(wallet));
         name: 'My NFT',
         uri: metadataUri,
     }).sendAndConfirm(umi);
+    console.log("asset has been created")
 
     // Deserialize the Signature from the Transaction
     signature = base58.deserialize(assetTx.signature)[0];
-    console.log(signature);
+    console.log("Signature: \n", signature);
 
     // Fetch the Asset to verify that has been created
     const fetchedAsset = await fetchAsset(umi, asset.publicKey.toString());

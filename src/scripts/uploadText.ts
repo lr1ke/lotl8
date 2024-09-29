@@ -1,24 +1,28 @@
-'use server';
 
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
-import { createGenericFile } from "@metaplex-foundation/umi";
-import { mockStorage } from '@metaplex-foundation/umi-storage-mock';
+import { createGenericFile, createSignerFromKeypair, signerIdentity } from "@metaplex-foundation/umi"
 import { walletAdapterIdentity } from '@metaplex-foundation/umi-signer-wallet-adapters';
 import { irysUploader } from "@metaplex-foundation/umi-uploader-irys";
 
 
+import wallet from "../wallet.json";
 
 
-export const uploadText = async (wallet: any): Promise<string> => {
 
-const umi = createUmi("https://api.devnet.solana.com", "confirmed")
-umi.use(irysUploader());
-umi.use(walletAdapterIdentity(wallet));
+export const uploadText = async (text: string) => {
 
-    const note = "Ein rosaroter Sommermontag"
-    const myFile = createGenericFile(note, "TestNFT")
+    const umi = createUmi("https://api.mainnet-beta.solana.com", "finalized")
+    let keypair = umi.eddsa.createKeypairFromSecretKey(new Uint8Array(wallet));
+    const myKeypairSigner = createSignerFromKeypair(umi, keypair);
+    umi.use(signerIdentity(myKeypairSigner)).use(irysUploader());
+    
+    console.log("Uploading note...");
 
-    const [noteUri] = await umi.uploader.upload([myFile]);
-    console.log(noteUri);
-    return noteUri;
+let genText = createGenericFile(text, 'my-file.txt', { contentType: "text/plain" });
+
+const textUri = await umi.uploader.upload([genText]);
+
+console.log(textUri);
+return textUri;
 }
+

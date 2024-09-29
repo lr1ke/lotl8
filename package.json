@@ -1,14 +1,11 @@
 {
-  "name": "ctrl-x",
+  "name": "lotl",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
-    "lint": "next lint",
-    "create-collection": "ts-node src/scripts/createCollection.ts",
-    "create-asset": "ts-node src/app/api/actions/route.ts"
+    "start": "next start"
   },
   "dependencies": {
     "@bundlr-network/client": "^0.11.17",
@@ -40,7 +37,7 @@
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "postcss": "^8",
-    "tailwindcss": "^3.4.1",
+    "tailwindcss": "^3.4.13",
     "ts-node": "^10.9.2",
     "typescript": "^5"
   }
