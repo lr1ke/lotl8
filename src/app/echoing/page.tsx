@@ -1,11 +1,12 @@
 "use client"
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useWallet, useConnection } from "@solana/wallet-adapter-react";
 import { mintNFT } from "@/scripts/createCollectionAndAsset";
 import { uploadText } from "@/scripts/uploadText";
 import { uploadMetadata } from "@/scripts/uploadMetadata";
 import { ConnectWallet } from "@/components/ui/ConnectWallet";
+import html2canvas from "html2canvas";
 
 
 
@@ -15,6 +16,10 @@ const Echoing = () => {
   const [content, setContent] = useState("");
   const [charCount, setCharCount] = useState(0);
   const [metaUri, setMetaUri] = useState("");
+  const contentRef = useRef<HTMLDivElement>(null);
+
+
+
 
 
   async function handlePublishClick() {
@@ -33,9 +38,17 @@ const Echoing = () => {
   }
 
   const handleMintClick = async (e:any) => {
-
-
     console.log("Minting NFT...");
+
+    // if (contentRef.current) {
+    //   //mache foto von div
+    //   const canvas = await html2canvas(contentRef.current); 
+    //   const imgData = canvas.toDataURL("image/png"); //imgData is a base64 string
+    //   console.log("Image data:", imgData);
+    //   const img = document.createElement("img");
+    //   img.src = imgData;
+    //   document.body.appendChild(img);
+    // }
 
     try {
         const [noteUri] = await uploadText(content); //destrukturiere array text and geb erstes element []
@@ -72,6 +85,7 @@ const Echoing = () => {
                             <h2 className="text-xl mb-4 font-semibold text-center">Your Dojo</h2>
                             <form onSubmit={handlePublishClick}>
                                 <br />
+                                {/* <div ref={contentRef}> */}
                                 <textarea
                                     id="content"
                                     name="content"
@@ -86,6 +100,7 @@ const Echoing = () => {
                                     maxLength={250}
                                 ></textarea>
                                 <p>{charCount}/250</p>
+                                {/* </div> */}
                                 <br />
                             </form>
                             <div className="flex space-x-4 mb-4">
@@ -97,6 +112,7 @@ const Echoing = () => {
                                 </button>
                                 </div>
                                 <ConnectWallet />
+                                
                         </div>
                     </div>
                 </div>
