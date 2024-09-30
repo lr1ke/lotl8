@@ -40,15 +40,15 @@ const Echoing = () => {
   const handleMintClick = async (e:any) => {
     console.log("Minting NFT...");
 
-    // if (contentRef.current) {
-    //   //mache foto von div
-    //   const canvas = await html2canvas(contentRef.current); 
-    //   const imgData = canvas.toDataURL("image/png"); //imgData is a base64 string
-    //   console.log("Image data:", imgData);
-    //   const img = document.createElement("img");
-    //   img.src = imgData;
-    //   document.body.appendChild(img);
-    // }
+    if (contentRef.current) {
+      //mache foto von div
+      const canvas = await html2canvas(contentRef.current); 
+      const imgData = canvas.toDataURL("image/png"); //imgData is a base64 string
+      console.log("Image data:", imgData);
+      const img = document.createElement("img");
+      img.src = imgData;
+      document.body.appendChild(img);
+    }
 
     try {
         const [noteUri] = await uploadText(content); //destrukturiere array text and geb erstes element []
@@ -85,7 +85,7 @@ const Echoing = () => {
                             <h2 className="text-xl mb-4 font-semibold text-center">Your Dojo</h2>
                             <form onSubmit={handlePublishClick}>
                                 <br />
-                                {/* <div ref={contentRef}> */}
+                                <div ref={contentRef}>
                                 <textarea
                                     id="content"
                                     name="content"
@@ -100,7 +100,7 @@ const Echoing = () => {
                                     maxLength={250}
                                 ></textarea>
                                 <p>{charCount}/250</p>
-                                {/* </div> */}
+                                </div>
                                 <br />
                             </form>
                             <div className="flex space-x-4 mb-4">
