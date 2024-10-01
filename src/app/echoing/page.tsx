@@ -118,49 +118,128 @@ const Echoing = () => {
   //   };
 
 
-    const handleSoulboundClick = async(event: { preventDefault: () => void}) => {
-    //prevent react app from resetting
-    event.preventDefault();
+    // const handleSoulboundClick = async(event: { preventDefault: () => void}) => {
+    // //prevent react app from resetting
+    // event.preventDefault();
+    
+    //   console.log("Minting Soulbound NFT...");
+
+    //   let picUri = "";
+
+    //   if (contentRef.current) {
+    //     // Convert the div to a canvas image
+    //     const canvas = await html2canvas(contentRef.current); 
+    //     const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/png"));
+        
+    //     if (blob) {
+    //       try {
+    //         // Pass the Blob to uploadImage function
+    //         const imageUri = await uploadImage(blob);
+    //         console.log("Uploaded Image:", imageUri);
+    //         picUri = imageUri; 
+    //       } catch (error) {
+    //         console.error("Error during Image Upload:", error);
+    //       }
+    //     } else {
+    //       console.error("Canvas conversion to blob failed.");
+    //     }
+    //   }
+    
+    //   try {
+    //       const [noteUri] = await uploadText(content); //destrukturiere array text and geb erstes element []
+    //       console.log("Uploaded Text:", noteUri);
+    //       const metaUri = await uploadMetadata(noteUri, picUri);
+    //       setMetaUri(metaUri);
+    //       console.log("Uploaded Metadata:", metaUri);
+    //       const fetchedAsset = await mintSouldbound(metaUri, noteUri, wallet);
+    //       console.log("Zeige das Asset:", fetchedAsset);
+  
+    //     } catch (error) {
+    //     console.error("Error during NFT minting:", error);
+    //     }
+    //   };
+  
+
+    const handleSoulboundClick = async (event: { preventDefault: () => void }) => {
+      event.preventDefault();
     
       console.log("Minting Soulbound NFT...");
-
+    
       let picUri = "";
-
+    
       if (contentRef.current) {
+        const isMobile = window.innerWidth <= 768; // Detect mobile screen size
         
-
-        // Convert the div to a canvas image
-        const canvas = await html2canvas(contentRef.current); 
-        const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/png"));
-        
+        // Set canvas dimensions based on screen size
+        const canvas = document.createElement('canvas');
+        canvas.width = isMobile ? window.innerWidth - 20 : 800;  // Full width for mobile, fixed size for desktop
+        canvas.height = isMobile ? 1200 : 1000; // Adjust height proportionally
+      
+        const ctx = canvas.getContext('2d');
+      
+        // Set background color (optional)
+        ctx!.fillStyle = '#fff'; // white background
+        ctx!.fillRect(0, 0, canvas.width, canvas.height);
+      
+        // Set text properties
+        const fontSize = isMobile ? 24 : 30; // Smaller font for mobile, larger for desktop
+        ctx!.font = `${fontSize}px Arial`;
+        ctx!.fillStyle = '#000'; // Black text
+        ctx!.textAlign = 'center';
+      
+        // Adjust text wrapping and padding based on screen size
+        const paddingX = isMobile ? 20 : 100;
+        const paddingY = isMobile ? 50 : 200;
+        const maxWidth = canvas.width - 2 * paddingX;
+        const lineHeight = isMobile ? 30 : 40;
+      
+        const words = content.split(' ');
+        let line = '';
+        let y = paddingY;
+      
+        for (let n = 0; n < words.length; n++) {
+          const testLine = line + words[n] + ' ';
+          const metrics = ctx!.measureText(testLine);
+          const testWidth = metrics.width;
+      
+          if (testWidth > maxWidth && n > 0) {
+            ctx!.fillText(line, canvas.width / 2, y);
+            line = words[n] + ' ';
+            y += lineHeight;
+          } else {
+            line = testLine;
+          }
+        }
+      
+        ctx!.fillText(line, canvas.width / 2, y);
+      
+        const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/png'));
+      
         if (blob) {
           try {
-            // Pass the Blob to uploadImage function
             const imageUri = await uploadImage(blob);
-            console.log("Uploaded Image:", imageUri);
-            picUri = imageUri; 
+            console.log('Uploaded Image:', imageUri);
+            picUri = imageUri;
           } catch (error) {
-            console.error("Error during Image Upload:", error);
+            console.error('Error during Image Upload:', error);
           }
-        } else {
-          console.error("Canvas conversion to blob failed.");
         }
       }
-    
+          
       try {
-          const [noteUri] = await uploadText(content); //destrukturiere array text and geb erstes element []
-          console.log("Uploaded Text:", noteUri);
-          const metaUri = await uploadMetadata(noteUri, picUri);
-          setMetaUri(metaUri);
-          console.log("Uploaded Metadata:", metaUri);
-          const fetchedAsset = await mintSouldbound(metaUri, noteUri, wallet);
-          console.log("Zeige das Asset:", fetchedAsset);
-  
-        } catch (error) {
+        const [noteUri] = await uploadText(content); // Upload text content
+        console.log("Uploaded Text:", noteUri);
+        const metaUri = await uploadMetadata(noteUri, picUri); // Include image URI in metadata
+        setMetaUri(metaUri);
+        console.log("Uploaded Metadata:", metaUri);
+        const fetchedAsset = await mintSouldbound(metaUri, noteUri, wallet); // Mint the NFT
+        console.log("Asset Created:", fetchedAsset);
+    
+      } catch (error) {
         console.error("Error during NFT minting:", error);
-        }
       }
-  
+    };
+    
 
       const handleRoyaltyClick = async (event: { preventDefault: () => void}) => {
         //prevent react app from resetting
