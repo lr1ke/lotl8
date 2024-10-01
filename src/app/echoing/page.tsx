@@ -1,4 +1,5 @@
 "use client"
+import * as React from 'react';
 
 import { useEffect, useState, useRef } from "react";
 import { useWallet, useConnection } from "@solana/wallet-adapter-react";
@@ -6,17 +7,23 @@ import { mintNFT } from "@/scripts/createCollectionAndAsset";
 import { uploadText } from "@/scripts/uploadText";
 import { uploadMetadata } from "@/scripts/uploadMetadata";
 import { ConnectWallet } from "@/components/ui/ConnectWallet";
-import html2canvas from "html2canvas";
+import { mintSouldbound } from '@/scripts/createSoulboundAsset';
+import { mintRoyalty } from '@/scripts/createRoyaltyNFT';
+// import html2canvas from "html2canvas";
+// import { uploadImage } from "@/scripts/uploadImage";
 
 
 
 const Echoing = () => { 
-  const [data, setData] = useState('')
+  const [data, setData] = React.useState<string>('');
+  const [content, setContent] = React.useState<string>("");
+  const [charCount, setCharCount] = React.useState<number>(0);
+  const [metaUri, setMetaUri] = React.useState<string>("");
+
+
+  // const contentRef = useRef<HTMLDivElement>(null);
+
   const wallet = useWallet();
-  const [content, setContent] = useState("");
-  const [charCount, setCharCount] = useState(0);
-  const [metaUri, setMetaUri] = useState("");
-  const contentRef = useRef<HTMLDivElement>(null);
 
 
 
@@ -37,18 +44,19 @@ const Echoing = () => {
     }
   }
 
-  const handleMintClick = async (e:any) => {
+  const handleMintClick = async () => {
     console.log("Minting NFT...");
 
-    if (contentRef.current) {
-      //mache foto von div
-      const canvas = await html2canvas(contentRef.current); 
-      const imgData = canvas.toDataURL("image/png"); //imgData is a base64 string
-      console.log("Image data:", imgData);
-      const img = document.createElement("img");
-      img.src = imgData;
-      document.body.appendChild(img);
-    }
+    // let imgData = "";
+
+    // if (contentRef.current) {
+    //   //mache foto von div
+    //   const canvas = await html2canvas(contentRef.current); 
+    //   const imgData = canvas.toDataURL("image/jpeg"); //imgData is a base64 string
+    //   const img = document.createElement("img");
+    //   img.src = imgData;
+    //   document.body.appendChild(img);
+    // }
 
     try {
         const [noteUri] = await uploadText(content); //destrukturiere array text and geb erstes element []
@@ -64,6 +72,43 @@ const Echoing = () => {
       console.error("Error during NFT minting:", error);
       }
     }
+
+
+    const handleSoulboundClick = async () => {
+      console.log("Minting Soulbound NFT...");
+    
+      try {
+          const [noteUri] = await uploadText(content); //destrukturiere array text and geb erstes element []
+          console.log("Uploaded Text:", noteUri);
+          const metaUri = await uploadMetadata(noteUri);
+          setMetaUri(metaUri);
+          console.log("Uploaded Metadata:", metaUri);
+          const { assetAddress } = await mintSouldbound(metaUri , wallet);
+          console.log("Asset Address:", assetAddress);
+  
+        } catch (error) {
+        console.error("Error during NFT minting:", error);
+        }
+      }
+  
+
+      const handleRoyaltyClick = async () => {
+        console.log("Minting NFT /w Royalties...");
+    
+        try {
+            const [noteUri] = await uploadText(content); //destrukturiere array text and geb erstes element []
+            console.log("Uploaded Text:", noteUri);
+            const metaUri = await uploadMetadata(noteUri);
+            setMetaUri(metaUri);
+            console.log("Uploaded Metadata:", metaUri);
+            const { assetAddress } = await mintRoyalty(metaUri , wallet);
+            console.log("Asset Address:", assetAddress);
+    
+          } catch (error) {
+          console.error("Error during NFT minting:", error);
+          }
+        }
+    
 
 
   return (
@@ -85,7 +130,7 @@ const Echoing = () => {
                             <h2 className="text-xl mb-4 font-semibold text-center">Your Dojo</h2>
                             <form onSubmit={handlePublishClick}>
                                 <br />
-                                <div ref={contentRef}>
+                                {/* <div ref={contentRef}> */}
                                 <textarea
                                     id="content"
                                     name="content"
@@ -100,7 +145,7 @@ const Echoing = () => {
                                     maxLength={250}
                                 ></textarea>
                                 <p>{charCount}/250</p>
-                                </div>
+                                {/* </div> */}
                                 <br />
                             </form>
                             <div className="flex space-x-4 mb-4">
@@ -108,7 +153,19 @@ const Echoing = () => {
                                   type="button"
                                   onClick={handleMintClick}
                                   className="flex-1 bg-gradient-to-r from-pink-300 to-yellow-200 hover:from-green-300 hover:to-blue-300 text-white p-2 rounded px-4 py-2 rounded-r-md"
+                                >Soulbound Collection & NFT
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={handleSoulboundClick}
+                                  className="flex-1 bg-gradient-to-r from-pink-300 to-yellow-200 hover:from-green-300 hover:to-blue-300 text-white p-2 rounded px-4 py-2 rounded-r-md"
                                 >Soulbound NFT
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={handleRoyaltyClick }
+                                  className="flex-1 bg-gradient-to-r from-pink-300 to-yellow-200 hover:from-green-300 hover:to-blue-300 text-white p-2 rounded px-4 py-2 rounded-r-md"
+                                >NFT /w Royalties
                                 </button>
                                 </div>
                                 <ConnectWallet />
