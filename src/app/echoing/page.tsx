@@ -9,8 +9,10 @@ import { uploadMetadata } from "@/scripts/uploadMetadata";
 import { ConnectWallet } from "@/components/ui/ConnectWallet";
 import { mintSouldbound } from '@/scripts/createSoulboundAsset';
 import { mintRoyalty } from '@/scripts/createRoyaltyNFT';
-// import html2canvas from "html2canvas";
-// import { uploadImage } from "@/scripts/uploadImage";
+import { fetchAsset1 } from '@/scripts/dasFetch';
+import html2canvas from "html2canvas";
+import { uploadImage } from "@/scripts/uploadImage";
+
 
 
 
@@ -19,15 +21,27 @@ const Echoing = () => {
   const [content, setContent] = React.useState<string>("");
   const [charCount, setCharCount] = React.useState<number>(0);
   const [metaUri, setMetaUri] = React.useState<string>("");
-
-
-  // const contentRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement | null>(null);
 
   const wallet = useWallet();
 
 
 
+  const handleFetchClick = async(event: { preventDefault: () => void}) => {
+    //prevent react app from resetting
+    event.preventDefault();
+    
+      console.log("Fetch asset...");
+    
+      try {
+          const fetchedAsset1 = await fetchAsset1(); 
+          console.log("Fetched Asset1:", fetchedAsset1);
 
+  
+        } catch (error) {
+        console.error("Error during NFT minting:", error);
+        }
+      }
 
   async function handlePublishClick() {
     if (!data) return
@@ -44,47 +58,103 @@ const Echoing = () => {
     }
   }
 
+
+
   const handleMintClick = async () => {
     console.log("Minting NFT...");
-
-    // let imgData = "";
-
-    // if (contentRef.current) {
-    //   //mache foto von div
-    //   const canvas = await html2canvas(contentRef.current); 
-    //   const imgData = canvas.toDataURL("image/jpeg"); //imgData is a base64 string
-    //   const img = document.createElement("img");
-    //   img.src = imgData;
-    //   document.body.appendChild(img);
-    // }
-
-    try {
-        const [noteUri] = await uploadText(content); //destrukturiere array text and geb erstes element []
-        console.log("Uploaded Text:", noteUri);
-        const metaUri = await uploadMetadata(noteUri);
-        setMetaUri(metaUri);
-        console.log("Uploaded Metadata:", metaUri);
-        const { collectionAddress, assetAddress } = await mintNFT(metaUri , wallet);
-        console.log("Collection Address:", collectionAddress);
-        console.log("Asset Address:", assetAddress);
-
-      } catch (error) {
-      console.error("Error during NFT minting:", error);
+  
+    if (contentRef.current) {
+      // Convert the div to a canvas image
+      const canvas = await html2canvas(contentRef.current); 
+      const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/png"));
+      
+      if (blob) {
+        try {
+          // Pass the Blob to uploadImage function
+          const imageUri = await uploadImage(blob);
+          console.log("Uploaded Image:", imageUri);
+        } catch (error) {
+          console.error("Error during Image Upload:", error);
+        }
+      } else {
+        console.error("Canvas conversion to blob failed.");
       }
     }
+  };
+  
+  
+    
 
 
-    const handleSoulboundClick = async () => {
+
+
+
+
+
+
+
+  // const handleMintClick = async (event: { preventDefault: () => void}) => {
+  //   //prevent react app from resetting
+  //   event.preventDefault();
+
+  //   console.log("Minting NFT...");
+
+
+  //   try {
+
+
+  //       const [noteUri] = await uploadText(content); //destrukturiere array text and geb erstes element []
+  //       console.log("Uploaded Text:", noteUri);
+  //       const metaUri = await uploadMetadata(noteUri);
+  //       setMetaUri(metaUri);
+  //       console.log("Uploaded Metadata:", metaUri);
+  //       const { collectionAddress, assetAddress } = await mintNFT(metaUri , wallet);
+  //       console.log("Collection Address:", collectionAddress);
+  //       console.log("Asset Address:", assetAddress);
+
+  //     } catch (error) {
+  //     console.error("Error during NFT minting:", error);
+  //     }
+  //   };
+
+
+    const handleSoulboundClick = async(event: { preventDefault: () => void}) => {
+    //prevent react app from resetting
+    event.preventDefault();
+    
       console.log("Minting Soulbound NFT...");
+
+      let picUri = "";
+
+      if (contentRef.current) {
+        
+
+        // Convert the div to a canvas image
+        const canvas = await html2canvas(contentRef.current); 
+        const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/png"));
+        
+        if (blob) {
+          try {
+            // Pass the Blob to uploadImage function
+            const imageUri = await uploadImage(blob);
+            console.log("Uploaded Image:", imageUri);
+            picUri = imageUri; 
+          } catch (error) {
+            console.error("Error during Image Upload:", error);
+          }
+        } else {
+          console.error("Canvas conversion to blob failed.");
+        }
+      }
     
       try {
           const [noteUri] = await uploadText(content); //destrukturiere array text and geb erstes element []
           console.log("Uploaded Text:", noteUri);
-          const metaUri = await uploadMetadata(noteUri);
+          const metaUri = await uploadMetadata(noteUri, picUri);
           setMetaUri(metaUri);
           console.log("Uploaded Metadata:", metaUri);
-          const { assetAddress } = await mintSouldbound(metaUri , wallet);
-          console.log("Asset Address:", assetAddress);
+          const fetchedAsset = await mintSouldbound(metaUri, noteUri, wallet);
+          console.log("Zeige das Asset:", fetchedAsset);
   
         } catch (error) {
         console.error("Error during NFT minting:", error);
@@ -92,7 +162,10 @@ const Echoing = () => {
       }
   
 
-      const handleRoyaltyClick = async () => {
+      const handleRoyaltyClick = async (event: { preventDefault: () => void}) => {
+        //prevent react app from resetting
+        event.preventDefault();
+        
         console.log("Minting NFT /w Royalties...");
     
         try {
@@ -130,7 +203,7 @@ const Echoing = () => {
                             <h2 className="text-xl mb-4 font-semibold text-center">Your Dojo</h2>
                             <form onSubmit={handlePublishClick}>
                                 <br />
-                                {/* <div ref={contentRef}> */}
+                                <div ref={contentRef}>
                                 <textarea
                                     id="content"
                                     name="content"
@@ -145,7 +218,7 @@ const Echoing = () => {
                                     maxLength={250}
                                 ></textarea>
                                 <p>{charCount}/250</p>
-                                {/* </div> */}
+                                </div>
                                 <br />
                             </form>
                             <div className="flex space-x-4 mb-4">
@@ -166,6 +239,12 @@ const Echoing = () => {
                                   onClick={handleRoyaltyClick }
                                   className="flex-1 bg-gradient-to-r from-pink-300 to-yellow-200 hover:from-green-300 hover:to-blue-300 text-white p-2 rounded px-4 py-2 rounded-r-md"
                                 >NFT /w Royalties
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={handleFetchClick }
+                                  className="flex-1 bg-gradient-to-r from-pink-300 to-yellow-200 hover:from-green-300 hover:to-blue-300 text-white p-2 rounded px-4 py-2 rounded-r-md"
+                                >Fetch
                                 </button>
                                 </div>
                                 <ConnectWallet />

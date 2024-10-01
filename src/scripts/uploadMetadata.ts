@@ -6,9 +6,12 @@ import { createSignerFromKeypair, signerIdentity } from "@metaplex-foundation/um
 import { irysUploader } from "@metaplex-foundation/umi-uploader-irys";
 
 import wallet from "../wallet.json";
+import { symbol } from "prop-types";
+
+const nftImageUrl = "https://nathan-galindo.vercel.app/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fimage-2.614ae0c9.jpg&w=640&q=75";
 
 
-export const uploadMetadata = async (noteUri: any) => {
+export const uploadMetadata = async (noteUri: any, picUri: any) => {
 
 const umi = createUmi("https://api.mainnet-beta.solana.com", "finalized")
 let keypair = umi.eddsa.createKeypairFromSecretKey(new Uint8Array(wallet));
@@ -18,21 +21,21 @@ umi.use(signerIdentity(myKeypairSigner)).use(irysUploader());
 console.log("Uploading NFT metadata...");
 
     const metadata = {
-        name: "Lotl NFT",
-        symbol: "Lotl",
-        description: "This is an NFT from the Lotl collective diary.",
-        image: "some image",
-        attributes: [
+        "name": "Lotl NFT",
+        "symbol": "LTLN",
+        "description": "Lotl collective diary NFT.",
+        "image": picUri,
+        "attributes": [
             {
-                trait_type: "Lotl diary entry",
-                value: "anonymous"
+                "trait_type": "diary entry",
+                "value": "anonymous"
             },
         ],
-        proprieties: {
-            files: [
+        "proprieties": {
+            "files": [
                 {
-                    type: "text/plain",
-                    uri: noteUri
+                    "uri": picUri,
+                    "type": "image/png"
                 }
             ]
         }

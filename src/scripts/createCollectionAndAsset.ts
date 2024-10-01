@@ -12,35 +12,35 @@ const umi = createUmi('https://api.devnet.solana.com')
 // Register Wallet Adapter to Umi
 umi.use(walletAdapterIdentity(wallet));
 
-    // // Generate the Collection PublicKey
-    // const collection = generateSigner(umi)
-    // console.log("Collection Address: \n", collection.publicKey.toString())
-    // console.log('metadataUri 2:', metadataUri)
+    // Generate the Collection PublicKey
+    const collection = generateSigner(umi)
+    console.log("Collection Address: \n", collection.publicKey.toString())
+    console.log('metadataUri 2:', metadataUri)
 
-    // // Generate the collection
-    // const collectionTx = await createCollection(umi, {
-    //     collection: collection,
-    //     name: 'Lotl Souldbound Collection',
-    //     uri: metadataUri,
-    //     plugins: [
-    //         {
-    //             type: "PermanentFreezeDelegate",
-    //             frozen: true,
-    //             authority: { type: "None" }
-    //         }
-    //     ]
+    // Generate the collection
+    const collectionTx = await createCollection(umi, {
+        collection: collection,
+        name: 'Lotl Souldbound Collection',
+        uri: metadataUri,
+        plugins: [
+            {
+                type: "PermanentFreezeDelegate",
+                frozen: true,
+                authority: { type: "None" }
+            }
+        ]
 
-    // }).sendAndConfirm(umi);
+    }).sendAndConfirm(umi);
 
 
 
-    // // Deserialize the Signature from the Transaction
-    // let signature = base58.deserialize(collectionTx.signature)[0];
-    // console.log(signature);
+    // Deserialize the Signature from the Transaction
+    let signatureTx = base58.deserialize(collectionTx.signature)[0];
+    console.log(signatureTx);
 
-    // // Fetch the Collection to verify that has been created
-    // let fetchedCollection = await fetchCollection(umi, collection.publicKey);
-    // console.log("Verify that the Collection has been Minted: \n", fetchedCollection);
+    // Fetch the Collection to verify that has been created
+    let fetchedCollection = await fetchCollection(umi, collection.publicKey);
+    console.log("Verify that the Collection has been Minted: \n", fetchedCollection);
 
     // Generate the Asset PublicKey
     const asset = generateSigner(umi)
@@ -49,7 +49,7 @@ umi.use(walletAdapterIdentity(wallet));
     // Generate the Asset
     const assetTx = await create(umi, {
         asset: asset,
-        // collection: collection,
+        collection: collection,
         name: 'Soulbound Note',
         uri: metadataUri,
         plugins: [
@@ -73,12 +73,12 @@ umi.use(walletAdapterIdentity(wallet));
 
 
     // // Fetch the Collection again to verify that the Asset has been added
-    // fetchedCollection = await fetchCollection(umi, collection.publicKey);
-    // console.log("Verify that the Asset has been Added to the collection: \n", fetchedCollection);
+    fetchedCollection = await fetchCollection(umi, collection.publicKey);
+    console.log("Verify that the Asset has been Added to the collection: \n", fetchedCollection);
     
 
     return {
-        // collectionAddress: collection.publicKey.toString(),
+        collectionAddress: collection.publicKey.toString(),
         assetAddress: asset.publicKey.toString(),
       };
     };
