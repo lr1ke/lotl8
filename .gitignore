@@ -38,3 +38,6 @@ next-env.d.ts
 
 wallet.json
 **/wallet.json
+
+walletCollection.json
+++/walletCollection.json
