@@ -27,7 +27,7 @@ umi.use(walletAdapterIdentity(wallet));
         plugins: [
             {
                 type: 'Royalties',
-                basisPoints: 500,
+                basisPoints: 1500,
                 creators: [
                         {
                             address: asset.publicKey,

@@ -3,16 +3,17 @@ import * as React from 'react';
 
 import { useEffect, useState, useRef } from "react";
 import { useWallet, useConnection } from "@solana/wallet-adapter-react";
-import { mintNFT } from "@/scripts/createCollectionAndAsset";
 import { uploadText } from "@/scripts/uploadText";
 import { uploadMetadata } from "@/scripts/uploadMetadata";
 import { ConnectWallet } from "@/components/ui/ConnectWallet";
 import { mintSouldbound } from '@/scripts/createSoulboundAsset';
 import { mintRoyalty } from '@/scripts/createRoyaltyNFT';
-import { fetchAsset1 } from '@/scripts/dasFetch';
+// import { fetchAsset1 } from '@/scripts/dasFetch';
 import html2canvas from "html2canvas";
 import { uploadImage } from "@/scripts/uploadImage";
-
+import { mintSoulboundCollection } from '@/scripts/mintSoulboundCollection';
+import { uploadMetadataColl } from '@/scripts/uploadMetadataColl';
+import { fetchAssetOwner } from '../api/fetchAssetsOwner';
 
 
 
@@ -25,141 +26,16 @@ const Echoing = () => {
 
   const wallet = useWallet();
 
+  let fetchedCollectionSoul = {};
 
+  const fetchedAssetsOwner = async () => {
 
-  const handleFetchClick = async(event: { preventDefault: () => void}) => {
-    //prevent react app from resetting
-    event.preventDefault();
-    
-      console.log("Fetch asset...");
-    
-      try {
-          const fetchedAsset1 = await fetchAsset1(); 
-          console.log("Fetched Asset1:", fetchedAsset1);
-
-  
-        } catch (error) {
-        console.error("Error during NFT minting:", error);
-        }
-      }
-
-  async function handlePublishClick() {
-    if (!data) return
-    try {
-      setData('')
-      const response = await fetch('/api/uploadText', {
-        method: 'POST',
-        body: JSON.stringify(data), 
-      })
-      const json = await response.json()
-      console.log('json:', json)
-    } catch(err) {
-      console.log({ err })
-    }
+    const showAssetOwner = await fetchAssetOwner(wallet);
+    console.log("fetchedAsset: ", showAssetOwner);
   }
 
-
-
-  const handleMintClick = async () => {
-    console.log("Minting NFT...");
   
-    if (contentRef.current) {
-      // Convert the div to a canvas image
-      const canvas = await html2canvas(contentRef.current); 
-      const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/png"));
-      
-      if (blob) {
-        try {
-          // Pass the Blob to uploadImage function
-          const imageUri = await uploadImage(blob);
-          console.log("Uploaded Image:", imageUri);
-        } catch (error) {
-          console.error("Error during Image Upload:", error);
-        }
-      } else {
-        console.error("Canvas conversion to blob failed.");
-      }
-    }
-  };
-  
-  
-    
-
-
-
-
-
-
-
-
-
-  // const handleMintClick = async (event: { preventDefault: () => void}) => {
-  //   //prevent react app from resetting
-  //   event.preventDefault();
-
-  //   console.log("Minting NFT...");
-
-
-  //   try {
-
-
-  //       const [noteUri] = await uploadText(content); //destrukturiere array text and geb erstes element []
-  //       console.log("Uploaded Text:", noteUri);
-  //       const metaUri = await uploadMetadata(noteUri);
-  //       setMetaUri(metaUri);
-  //       console.log("Uploaded Metadata:", metaUri);
-  //       const { collectionAddress, assetAddress } = await mintNFT(metaUri , wallet);
-  //       console.log("Collection Address:", collectionAddress);
-  //       console.log("Asset Address:", assetAddress);
-
-  //     } catch (error) {
-  //     console.error("Error during NFT minting:", error);
-  //     }
-  //   };
-
-
-    // const handleSoulboundClick = async(event: { preventDefault: () => void}) => {
-    // //prevent react app from resetting
-    // event.preventDefault();
-    
-    //   console.log("Minting Soulbound NFT...");
-
-    //   let picUri = "";
-
-    //   if (contentRef.current) {
-    //     // Convert the div to a canvas image
-    //     const canvas = await html2canvas(contentRef.current); 
-    //     const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/png"));
-        
-    //     if (blob) {
-    //       try {
-    //         // Pass the Blob to uploadImage function
-    //         const imageUri = await uploadImage(blob);
-    //         console.log("Uploaded Image:", imageUri);
-    //         picUri = imageUri; 
-    //       } catch (error) {
-    //         console.error("Error during Image Upload:", error);
-    //       }
-    //     } else {
-    //       console.error("Canvas conversion to blob failed.");
-    //     }
-    //   }
-    
-    //   try {
-    //       const [noteUri] = await uploadText(content); //destrukturiere array text and geb erstes element []
-    //       console.log("Uploaded Text:", noteUri);
-    //       const metaUri = await uploadMetadata(noteUri, picUri);
-    //       setMetaUri(metaUri);
-    //       console.log("Uploaded Metadata:", metaUri);
-    //       const fetchedAsset = await mintSouldbound(metaUri, noteUri, wallet);
-    //       console.log("Zeige das Asset:", fetchedAsset);
-  
-    //     } catch (error) {
-    //     console.error("Error during NFT minting:", error);
-    //     }
-    //   };
-  
-
+    //Mint Soulbound NFT, asset
     const handleSoulboundClick = async (event: { preventDefault: () => void }) => {
       event.preventDefault();
     
@@ -217,7 +93,7 @@ const Echoing = () => {
       
         if (blob) {
           try {
-            const imageUri = await uploadImage(blob);
+            const imageUri = await uploadImage(blob);//upload image blob
             console.log('Uploaded Image:', imageUri);
             picUri = imageUri;
           } catch (error) {
@@ -229,7 +105,7 @@ const Echoing = () => {
       try {
         const [noteUri] = await uploadText(content); // Upload text content
         console.log("Uploaded Text:", noteUri);
-        const metaUri = await uploadMetadata(noteUri, picUri); // Include image URI in metadata
+        const metaUri = await uploadMetadata(noteUri, picUri); // Include note, image URI in metadata, upload
         setMetaUri(metaUri);
         console.log("Uploaded Metadata:", metaUri);
         const fetchedAsset = await mintSouldbound(metaUri, noteUri, wallet); // Mint the NFT
@@ -240,20 +116,245 @@ const Echoing = () => {
       }
     };
     
-
+    //Mint NFT with Royalties
       const handleRoyaltyClick = async (event: { preventDefault: () => void}) => {
         //prevent react app from resetting
         event.preventDefault();
         
         console.log("Minting NFT /w Royalties...");
+
+        let picUri = "";
     
+        if (contentRef.current) {
+          const isMobile = window.innerWidth <= 768; // Detect mobile screen size
+          
+          // Set canvas dimensions based on screen size
+          const canvas = document.createElement('canvas');
+          canvas.width = isMobile ? window.innerWidth - 20 : 800;  // Full width for mobile, fixed size for desktop
+          canvas.height = isMobile ? 1200 : 1000; // Adjust height proportionally
+        
+          const ctx = canvas.getContext('2d');
+        
+          // Set background color (optional)
+          ctx!.fillStyle = '#fff'; // white background
+          ctx!.fillRect(0, 0, canvas.width, canvas.height);
+        
+          // Set text properties
+          const fontSize = isMobile ? 24 : 30; // Smaller font for mobile, larger for desktop
+          ctx!.font = `${fontSize}px Arial`;
+          ctx!.fillStyle = '#000'; // Black text
+          ctx!.textAlign = 'center';
+        
+          // Adjust text wrapping and padding based on screen size
+          const paddingX = isMobile ? 20 : 100;
+          const paddingY = isMobile ? 50 : 200;
+          const maxWidth = canvas.width - 2 * paddingX;
+          const lineHeight = isMobile ? 30 : 40;
+        
+          const words = content.split(' ');
+          let line = '';
+          let y = paddingY;
+        
+          for (let n = 0; n < words.length; n++) {
+            const testLine = line + words[n] + ' ';
+            const metrics = ctx!.measureText(testLine);
+            const testWidth = metrics.width;
+        
+            if (testWidth > maxWidth && n > 0) {
+              ctx!.fillText(line, canvas.width / 2, y);
+              line = words[n] + ' ';
+              y += lineHeight;
+            } else {
+              line = testLine;
+            }
+          }
+        
+          ctx!.fillText(line, canvas.width / 2, y);
+        
+          const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/png'));
+        
+          if (blob) {
+            try {
+              const imageUri = await uploadImage(blob);//upload image blob
+              console.log('Uploaded Image:', imageUri);
+              picUri = imageUri;
+            } catch (error) {
+              console.error('Error during Image Upload:', error);
+            }
+          }
+        }
+
         try {
             const [noteUri] = await uploadText(content); //destrukturiere array text and geb erstes element []
             console.log("Uploaded Text:", noteUri);
-            const metaUri = await uploadMetadata(noteUri);
+            const metaUri = await uploadMetadata(noteUri, picUri); //upload metadata, include noteUri and picUri
             setMetaUri(metaUri);
             console.log("Uploaded Metadata:", metaUri);
-            const { assetAddress } = await mintRoyalty(metaUri , wallet);
+            const { assetAddress } = await mintRoyalty(metaUri , wallet); //mint NFT /w royalties
+            console.log("Asset Address:", assetAddress);
+    
+          } catch (error) {
+          console.error("Error during NFT minting:", error);
+          }
+        }
+
+            //Mint Collection Soulbound
+      const handleCollectionSoulbound = async (event: { preventDefault: () => void}) => {
+        //prevent react app from resetting
+        event.preventDefault();
+        
+        console.log("Minting ...");
+
+        let picUri = "";
+    
+        if (contentRef.current) {
+          const isMobile = window.innerWidth <= 768; // Detect mobile screen size
+          
+          // Set canvas dimensions based on screen size
+          const canvas = document.createElement('canvas');
+          canvas.width = isMobile ? window.innerWidth - 20 : 800;  // Full width for mobile, fixed size for desktop
+          canvas.height = isMobile ? 1200 : 1000; // Adjust height proportionally
+        
+          const ctx = canvas.getContext('2d');
+        
+          // Set background color (optional)
+          ctx!.fillStyle = '#fff'; // white background
+          ctx!.fillRect(0, 0, canvas.width, canvas.height);
+        
+          // Set text properties
+          const fontSize = isMobile ? 24 : 30; // Smaller font for mobile, larger for desktop
+          ctx!.font = `${fontSize}px Arial`;
+          ctx!.fillStyle = '#000'; // Black text
+          ctx!.textAlign = 'center';
+        
+          // Adjust text wrapping and padding based on screen size
+          const paddingX = isMobile ? 20 : 100;
+          const paddingY = isMobile ? 50 : 200;
+          const maxWidth = canvas.width - 2 * paddingX;
+          const lineHeight = isMobile ? 30 : 40;
+        
+          const words = content.split(' ');
+          let line = '';
+          let y = paddingY;
+        
+          for (let n = 0; n < words.length; n++) {
+            const testLine = line + words[n] + ' ';
+            const metrics = ctx!.measureText(testLine);
+            const testWidth = metrics.width;
+        
+            if (testWidth > maxWidth && n > 0) {
+              ctx!.fillText(line, canvas.width / 2, y);
+              line = words[n] + ' ';
+              y += lineHeight;
+            } else {
+              line = testLine;
+            }
+          }
+        
+          ctx!.fillText(line, canvas.width / 2, y);
+        
+          const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/png'));
+        
+          if (blob) {
+            try {
+              const imageUri = await uploadImage(blob);//upload image blob
+              console.log('Uploaded Image:', imageUri);
+              picUri = imageUri;
+            } catch (error) {
+              console.error('Error during Image Upload:', error);
+            }
+          }
+        }
+
+        try {
+        
+            const metaUri = await uploadMetadataColl( picUri); //upload metadata, include noteUri and picUri
+            setMetaUri(metaUri);
+            console.log("Uploaded Metadata:", metaUri);
+            const  fetchedCollection  = await mintSoulboundCollection(metaUri); //mint NFT /w royalties
+            console.log("FetchedSoulboundCollection:", fetchedCollection);    
+            fetchedCollectionSoul = fetchedCollection;
+          } catch (error) {
+          console.error("Error during NFT minting:", error);
+          }
+        }
+
+
+            //Mint Collection with Royalties
+      const handleCollectionRoyalty = async (event: { preventDefault: () => void}) => {
+        //prevent react app from resetting
+        event.preventDefault();
+        
+        console.log("Minting NFT /w Royalties...");
+
+        let picUri = "";
+    
+        if (contentRef.current) {
+          const isMobile = window.innerWidth <= 768; // Detect mobile screen size
+          
+          // Set canvas dimensions based on screen size
+          const canvas = document.createElement('canvas');
+          canvas.width = isMobile ? window.innerWidth - 20 : 800;  // Full width for mobile, fixed size for desktop
+          canvas.height = isMobile ? 1200 : 1000; // Adjust height proportionally
+        
+          const ctx = canvas.getContext('2d');
+        
+          // Set background color (optional)
+          ctx!.fillStyle = '#fff'; // white background
+          ctx!.fillRect(0, 0, canvas.width, canvas.height);
+        
+          // Set text properties
+          const fontSize = isMobile ? 24 : 30; // Smaller font for mobile, larger for desktop
+          ctx!.font = `${fontSize}px Arial`;
+          ctx!.fillStyle = '#000'; // Black text
+          ctx!.textAlign = 'center';
+        
+          // Adjust text wrapping and padding based on screen size
+          const paddingX = isMobile ? 20 : 100;
+          const paddingY = isMobile ? 50 : 200;
+          const maxWidth = canvas.width - 2 * paddingX;
+          const lineHeight = isMobile ? 30 : 40;
+        
+          const words = content.split(' ');
+          let line = '';
+          let y = paddingY;
+        
+          for (let n = 0; n < words.length; n++) {
+            const testLine = line + words[n] + ' ';
+            const metrics = ctx!.measureText(testLine);
+            const testWidth = metrics.width;
+        
+            if (testWidth > maxWidth && n > 0) {
+              ctx!.fillText(line, canvas.width / 2, y);
+              line = words[n] + ' ';
+              y += lineHeight;
+            } else {
+              line = testLine;
+            }
+          }
+        
+          ctx!.fillText(line, canvas.width / 2, y);
+        
+          const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/png'));
+        
+          if (blob) {
+            try {
+              const imageUri = await uploadImage(blob);//upload image blob
+              console.log('Uploaded Image:', imageUri);
+              picUri = imageUri;
+            } catch (error) {
+              console.error('Error during Image Upload:', error);
+            }
+          }
+        }
+
+        try {
+            const [noteUri] = await uploadText(content); //destrukturiere array text and geb erstes element []
+            console.log("Uploaded Text:", noteUri);
+            const metaUri = await uploadMetadata(noteUri, picUri); //upload metadata, include noteUri and picUri
+            setMetaUri(metaUri);
+            console.log("Uploaded Metadata:", metaUri);
+            const { assetAddress } = await mintRoyalty(metaUri , wallet); //mint NFT /w royalties
             console.log("Asset Address:", assetAddress);
     
           } catch (error) {
@@ -280,7 +381,7 @@ const Echoing = () => {
                     <div className="max-w-3xl mx-auto bg-white p-6 rounded-lg flex flex-col">
                         <div>
                             <h2 className="text-xl mb-4 font-semibold text-center">Your Dojo</h2>
-                            <form onSubmit={handlePublishClick}>
+                            <form >
                                 <br />
                                 <div ref={contentRef}>
                                 <textarea
@@ -301,12 +402,7 @@ const Echoing = () => {
                                 <br />
                             </form>
                             <div className="flex space-x-4 mb-4">
-                            <button
-                                  type="button"
-                                  onClick={handleMintClick}
-                                  className="flex-1 bg-gradient-to-r from-pink-300 to-yellow-200 hover:from-green-300 hover:to-blue-300 text-white p-2 rounded px-4 py-2 rounded-r-md"
-                                >Soulbound Collection & NFT
-                                </button>
+
                                 <button
                                   type="button"
                                   onClick={handleSoulboundClick}
@@ -319,11 +415,29 @@ const Echoing = () => {
                                   className="flex-1 bg-gradient-to-r from-pink-300 to-yellow-200 hover:from-green-300 hover:to-blue-300 text-white p-2 rounded px-4 py-2 rounded-r-md"
                                 >NFT /w Royalties
                                 </button>
-                                <button
+                                {/* <button
                                   type="button"
                                   onClick={handleFetchClick }
                                   className="flex-1 bg-gradient-to-r from-pink-300 to-yellow-200 hover:from-green-300 hover:to-blue-300 text-white p-2 rounded px-4 py-2 rounded-r-md"
                                 >Fetch
+                                </button> */}
+                                <button
+                                  type="button"
+                                  onClick={handleCollectionSoulbound }
+                                  className="flex-1 bg-gradient-to-r from-pink-300 to-yellow-200 hover:from-green-300 hover:to-blue-300 text-white p-2 rounded px-4 py-2 rounded-r-md"
+                                >Collection Soulbound
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={handleCollectionRoyalty }
+                                  className="flex-1 bg-gradient-to-r from-pink-300 to-yellow-200 hover:from-green-300 hover:to-blue-300 text-white p-2 rounded px-4 py-2 rounded-r-md"
+                                >Collection /w Royalties
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={fetchedAssetsOwner}
+                                  className="flex-1 bg-gradient-to-r from-pink-300 to-yellow-200 hover:from-green-300 hover:to-blue-300 text-white p-2 rounded px-4 py-2 rounded-r-md"
+                                >FetchAssets
                                 </button>
                                 </div>
                                 <ConnectWallet />

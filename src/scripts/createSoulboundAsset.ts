@@ -1,10 +1,15 @@
 //Create soulbound nft collection, asset
-
-import { generateSigner, percentAmount, createSignerFromKeypair, signerIdentity } from '@metaplex-foundation/umi'
+import dotenv from 'dotenv';
+dotenv.config();
+import { generateSigner, publicKey, percentAmount, createSignerFromKeypair, signerIdentity } from '@metaplex-foundation/umi'
 import { base58 } from '@metaplex-foundation/umi/serializers';
 import { createCollection, create, pluginAuthority, ruleSet, fetchAsset, fetchCollection} from '@metaplex-foundation/mpl-core'
 import { createUmi } from '@metaplex-foundation/umi-bundle-defaults';
 import { walletAdapterIdentity } from '@metaplex-foundation/umi-signer-wallet-adapters';
+
+
+
+const collectionPublicKey = publicKey("9M7tawjiaDKchUGmyR9MxZ4XdJT86cGmDCeBN355i4VR");
 
 
 export const mintSouldbound = async ( metadataUri: any, noteUri : any, wallet: any) => {
@@ -13,25 +18,13 @@ export const mintSouldbound = async ( metadataUri: any, noteUri : any, wallet: a
     const asset = generateSigner(umi)
     console.log("Asset Address: \n", asset.publicKey.toString())
 
+
     // Generate the Asset
     const assetTx = await create(umi, {
-        asset: asset,
-        // collection: collection,
-        name: 'Soulbound Note',
+        name: 'Soulbound LOTL',
         uri: metadataUri,
-        plugins: [
-            {
-                type: "PermanentFreezeDelegate",
-                frozen: true,
-                authority: { type: "None" }
-            },
-            {
-                type: "Attributes",
-                attributeList: [
-                    {key: 'image', value: noteUri}
-                ]
-            }
-        ]
+        asset: asset,
+        // collection: { publicKey: collectionPublicKey},
     }).sendAndConfirm(umi);
     console.log("asset has been created");
 
