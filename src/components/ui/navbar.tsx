@@ -12,7 +12,7 @@ export default function Navbar() {
         </div>
         <div className="space-x-4 flex items-center">
           <a href="/" className="text-gray-300 hover:text-white">Home</a>
-          <a href="/" className="text-gray-300 hover:text-white">Lot-y</a>
+          <a href="/lot-y" className="text-gray-300 hover:text-white">Lot-y</a>
           <a href="/lot-i" className="text-gray-300 hover:text-white">Lot-i</a>
           <a href="/echoing" className="text-gray-300 hover:text-white">Echoing</a>
           {/* <ConnectWallet /> */}

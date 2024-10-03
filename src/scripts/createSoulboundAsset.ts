@@ -1,7 +1,8 @@
-import { generateSigner, publicKey, now, formatDateTime } from '@metaplex-foundation/umi'
-import { create} from '@metaplex-foundation/mpl-core'
+import { generateSigner, publicKey, now, formatDateTime } from '@metaplex-foundation/umi';
+import { create, fetchAsset} from '@metaplex-foundation/mpl-core'
 import { createUmi } from '@metaplex-foundation/umi-bundle-defaults';
 import { walletAdapterIdentity } from '@metaplex-foundation/umi-signer-wallet-adapters';
+import { base58 } from '@metaplex-foundation/umi/serializers';
 
 
 export const mintSouldbound = async (metadataUri: any, picUri: any, wallet: any) => {

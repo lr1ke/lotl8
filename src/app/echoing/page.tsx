@@ -1,19 +1,16 @@
 "use client"
 import * as React from 'react';
 
-import { useEffect, useState, useRef } from "react";
-import { useWallet, useConnection } from "@solana/wallet-adapter-react";
+import { useRef } from "react";
+import { useWallet } from "@solana/wallet-adapter-react";
 import { uploadText } from "@/scripts/uploadText";
 import { uploadMetadata } from "@/scripts/uploadMetadata";
 import { ConnectWallet } from "@/components/ui/ConnectWallet";
 import { mintSouldbound } from '@/scripts/createSoulboundAsset';
 import { mintRoyalty } from '@/scripts/createRoyaltyNFT';
-// import { fetchAsset1 } from '@/scripts/dasFetch';
 import html2canvas from "html2canvas";
 import { uploadImage } from "@/scripts/uploadImage";
-import { uploadMetadataColl } from '@/scripts/uploadMetadataColl';
 import { fetchAssetOwner } from '../api/fetchAssetsOwner';
-import { mintLotlCollection } from '@/scripts/mintLotlCollection';
 
 
 
@@ -35,13 +32,7 @@ const Echoing = () => {
   }
 
 
-  //Mint Lotl Collection
-  const handleMintLotl = async (event: { preventDefault: () => void }) => {
-    event.preventDefault();
 
-    const fetchedAsset = await mintLotlCollection(); // Mint the NFT
-
-  }
   
     //Mint Soulbound NFT
     const handleSoulboundClick = async (event: { preventDefault: () => void }) => {
@@ -265,26 +256,13 @@ const Echoing = () => {
                                   className="flex-1 bg-gradient-to-r from-pink-300 to-yellow-200 hover:from-green-300 hover:to-blue-300 text-white p-2 rounded px-4 py-2 rounded-r-md"
                                 >Fetch
                                 </button> */}
-                                <button
-                                  type="button"
-                                  onClick={handleMintLotl }
-                                  className="flex-1 bg-gradient-to-r from-pink-300 to-yellow-200 hover:from-green-300 hover:to-blue-300 text-white p-2 rounded px-4 py-2 rounded-r-md"
-                                >Mint Lotl Col
-                                </button>
-                     
-                                <button
-                                  type="button"
-                                  onClick={fetchedAssetsOwner}
-                                  className="flex-1 bg-gradient-to-r from-pink-300 to-yellow-200 hover:from-green-300 hover:to-blue-300 text-white p-2 rounded px-4 py-2 rounded-r-md"
-                                >FetchAssets
-                                </button>
+
+            
                                 </div>
-                                <ConnectWallet />
-                                
+                                <ConnectWallet />                               
                         </div>
                     </div>
                 </div>
-
                 <div className="text-sm opacity-50">
                     <h1>echo-ing...</h1>
                     <p>Words that resonate in my heart.</p>
@@ -295,14 +273,7 @@ const Echoing = () => {
                     <p>What is echoing in my head</p>
                 </div>
             </div>
-
-
-
-
-
-
     </>
-    
   );
 };
 

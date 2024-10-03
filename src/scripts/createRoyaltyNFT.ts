@@ -1,7 +1,7 @@
 
 import { generateSigner, publicKey, now, dateTime, formatDateTime } from '@metaplex-foundation/umi'
 import { base58 } from '@metaplex-foundation/umi/serializers';
-import { createCollection, create, pluginAuthority, ruleSet, fetchAsset, fetchCollection} from '@metaplex-foundation/mpl-core'
+import { create, ruleSet, fetchAsset} from '@metaplex-foundation/mpl-core'
 import { createUmi } from '@metaplex-foundation/umi-bundle-defaults';
 import { walletAdapterIdentity } from '@metaplex-foundation/umi-signer-wallet-adapters';
 
