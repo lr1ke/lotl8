@@ -5,24 +5,25 @@ import { createCollection, create, pluginAuthority, ruleSet, fetchAsset, fetchCo
 import { createUmi } from '@metaplex-foundation/umi-bundle-defaults';
 import { walletAdapterIdentity } from '@metaplex-foundation/umi-signer-wallet-adapters';
 
-
-
-export const mintRoyalty = async ( metadataUri: any, picUri: any, wallet: any) => {
+    export const mintRoyalty = async ( metadataUri: any, picUri: any, wallet: any) => {
 
     const umi = createUmi('https://api.devnet.solana.com')
     umi.use(walletAdapterIdentity(wallet));
-    const asset = generateSigner(umi)
-    console.log("Asset Address: \n", asset.publicKey.toString())
+    const collectionPublicKey =  publicKey("HjB7oVk1Bvog9UVN6sPW6CTWMXMW2qE6cxSZ8GU8pf1w");
 
     //set date
     let datum = formatDateTime(now());
     console.log("Time: ", datum);
-      
+
+    const asset = generateSigner(umi)
+    console.log("Asset Address: \n", asset.publicKey.toString())
+
     // Generate NFT w/ Royalties
     const assetTx = await create(umi, {
         name: datum,
         uri: metadataUri,
         asset: asset,
+        collection: { publicKey: collectionPublicKey },  // Use public key only
         plugins: [
             {
                 type: 'Royalties',
@@ -42,7 +43,6 @@ export const mintRoyalty = async ( metadataUri: any, picUri: any, wallet: any) =
                         {key: "datum", value: datum }
                     ]
                 }
-            
         ]
     }).sendAndConfirm(umi);
     console.log("asset has been created");
