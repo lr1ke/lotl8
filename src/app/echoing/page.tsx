@@ -11,9 +11,9 @@ import { mintRoyalty } from '@/scripts/createRoyaltyNFT';
 // import { fetchAsset1 } from '@/scripts/dasFetch';
 import html2canvas from "html2canvas";
 import { uploadImage } from "@/scripts/uploadImage";
-import { mintSoulboundCollection } from '@/scripts/mintSoulboundCollection';
 import { uploadMetadataColl } from '@/scripts/uploadMetadataColl';
 import { fetchAssetOwner } from '../api/fetchAssetsOwner';
+import { mintLotlCollection } from '@/scripts/mintLotlCollection';
 
 
 
@@ -34,6 +34,14 @@ const Echoing = () => {
     console.log("fetchedAsset: ", showAssetOwner);
   }
 
+
+  //Mint Lotl Collection
+  const handleMintLotl = async (event: { preventDefault: () => void }) => {
+    event.preventDefault();
+
+    const fetchedAsset = await mintLotlCollection(); // Mint the NFT
+
+  }
   
     //Mint Soulbound NFT
     const handleSoulboundClick = async (event: { preventDefault: () => void }) => {
@@ -198,170 +206,6 @@ const Echoing = () => {
           }
         }
 
-      //Mint Collection Soulbound
-      const handleCollectionSoulbound = async (event: { preventDefault: () => void}) => {
-        //prevent react app from resetting
-        event.preventDefault();
-        
-        console.log("Minting ...");
-
-        let picUri = "";
-    
-        if (contentRef.current) {
-          const isMobile = window.innerWidth <= 768; // Detect mobile screen size
-          
-          // Set canvas dimensions based on screen size
-          const canvas = document.createElement('canvas');
-          canvas.width = isMobile ? window.innerWidth - 20 : 800;  // Full width for mobile, fixed size for desktop
-          canvas.height = isMobile ? 1200 : 1000; // Adjust height proportionally
-        
-          const ctx = canvas.getContext('2d');
-        
-          // Set background color (optional)
-          ctx!.fillStyle = '#fff'; // white background
-          ctx!.fillRect(0, 0, canvas.width, canvas.height);
-        
-          // Set text properties
-          const fontSize = isMobile ? 24 : 30; // Smaller font for mobile, larger for desktop
-          ctx!.font = `${fontSize}px Arial`;
-          ctx!.fillStyle = '#000'; // Black text
-          ctx!.textAlign = 'center';
-        
-          // Adjust text wrapping and padding based on screen size
-          const paddingX = isMobile ? 20 : 100;
-          const paddingY = isMobile ? 50 : 200;
-          const maxWidth = canvas.width - 2 * paddingX;
-          const lineHeight = isMobile ? 30 : 40;
-        
-          const words = content.split(' ');
-          let line = '';
-          let y = paddingY;
-        
-          for (let n = 0; n < words.length; n++) {
-            const testLine = line + words[n] + ' ';
-            const metrics = ctx!.measureText(testLine);
-            const testWidth = metrics.width;
-        
-            if (testWidth > maxWidth && n > 0) {
-              ctx!.fillText(line, canvas.width / 2, y);
-              line = words[n] + ' ';
-              y += lineHeight;
-            } else {
-              line = testLine;
-            }
-          }
-        
-          ctx!.fillText(line, canvas.width / 2, y);
-        
-          const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/png'));
-        
-          if (blob) {
-            try {
-              const imageUri = await uploadImage(blob);//upload image blob
-              console.log('Uploaded Image:', imageUri);
-              picUri = imageUri;
-            } catch (error) {
-              console.error('Error during Image Upload:', error);
-            }
-          }
-        }
-
-        try {
-        
-            const metaUri = await uploadMetadataColl( picUri); //upload metadata, include noteUri and picUri
-            setMetaUri(metaUri);
-            console.log("Uploaded Metadata:", metaUri);
-            const  fetchedCollection  = await mintSoulboundCollection(metaUri ); //mint NFT /w royalties
-            console.log("FetchedSoulboundCollection:", fetchedCollection);    
-            fetchedCollectionSoul = fetchedCollection;
-          } catch (error) {
-          console.error("Error during NFT minting:", error);
-          }
-        }
-
-
-            //Mint Collection with Royalties
-      const handleCollectionRoyalty = async (event: { preventDefault: () => void}) => {
-        //prevent react app from resetting
-        event.preventDefault();
-        
-        console.log("Minting NFT /w Royalties...");
-
-        let picUri = "";
-    
-        if (contentRef.current) {
-          const isMobile = window.innerWidth <= 768; // Detect mobile screen size
-          
-          // Set canvas dimensions based on screen size
-          const canvas = document.createElement('canvas');
-          canvas.width = isMobile ? window.innerWidth - 20 : 800;  // Full width for mobile, fixed size for desktop
-          canvas.height = isMobile ? 1200 : 1000; // Adjust height proportionally
-        
-          const ctx = canvas.getContext('2d');
-        
-          // Set background color (optional)
-          ctx!.fillStyle = '#fff'; // white background
-          ctx!.fillRect(0, 0, canvas.width, canvas.height);
-        
-          // Set text properties
-          const fontSize = isMobile ? 24 : 30; // Smaller font for mobile, larger for desktop
-          ctx!.font = `${fontSize}px Arial`;
-          ctx!.fillStyle = '#000'; // Black text
-          ctx!.textAlign = 'center';
-        
-          // Adjust text wrapping and padding based on screen size
-          const paddingX = isMobile ? 20 : 100;
-          const paddingY = isMobile ? 50 : 200;
-          const maxWidth = canvas.width - 2 * paddingX;
-          const lineHeight = isMobile ? 30 : 40;
-        
-          const words = content.split(' ');
-          let line = '';
-          let y = paddingY;
-        
-          for (let n = 0; n < words.length; n++) {
-            const testLine = line + words[n] + ' ';
-            const metrics = ctx!.measureText(testLine);
-            const testWidth = metrics.width;
-        
-            if (testWidth > maxWidth && n > 0) {
-              ctx!.fillText(line, canvas.width / 2, y);
-              line = words[n] + ' ';
-              y += lineHeight;
-            } else {
-              line = testLine;
-            }
-          }
-        
-          ctx!.fillText(line, canvas.width / 2, y);
-        
-          const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/png'));
-        
-          if (blob) {
-            try {
-              const imageUri = await uploadImage(blob);//upload image blob
-              console.log('Uploaded Image:', imageUri);
-              picUri = imageUri;
-            } catch (error) {
-              console.error('Error during Image Upload:', error);
-            }
-          }
-        }
-
-        try {
-            const [noteUri] = await uploadText(content); //destrukturiere array text and geb erstes element []
-            console.log("Uploaded Text:", noteUri);
-            const metaUri = await uploadMetadata(noteUri, picUri); //upload metadata, include noteUri and picUri
-            setMetaUri(metaUri);
-            console.log("Uploaded Metadata:", metaUri);
-            const { assetAddress } = await mintRoyalty(metaUri , picUri, wallet); //mint NFT /w royalties
-            console.log("Asset Address:", assetAddress);
-    
-          } catch (error) {
-          console.error("Error during NFT minting:", error);
-          }
-        }
-    
 
 
   return (
@@ -423,16 +267,11 @@ const Echoing = () => {
                                 </button> */}
                                 <button
                                   type="button"
-                                  onClick={handleCollectionSoulbound }
+                                  onClick={handleMintLotl }
                                   className="flex-1 bg-gradient-to-r from-pink-300 to-yellow-200 hover:from-green-300 hover:to-blue-300 text-white p-2 rounded px-4 py-2 rounded-r-md"
-                                >Collection Soulbound
+                                >Mint Lotl Col
                                 </button>
-                                <button
-                                  type="button"
-                                  onClick={handleCollectionRoyalty }
-                                  className="flex-1 bg-gradient-to-r from-pink-300 to-yellow-200 hover:from-green-300 hover:to-blue-300 text-white p-2 rounded px-4 py-2 rounded-r-md"
-                                >Collection /w Royalties
-                                </button>
+                     
                                 <button
                                   type="button"
                                   onClick={fetchedAssetsOwner}
@@ -459,22 +298,7 @@ const Echoing = () => {
 
 
 
-      {/* 
-      <input
-        placeholder="Create a post"
-        onChange={e => setData(e.target.value)}
-        className="text-black px-2 py-1"
-      /> */}
-      {/* <button
-        onClick={handleUploadClick}
-        className="text-black bg-white mt-2 px-12"
-      >Upload text</button>
 
-      {
-        transaction && (
-          <a target="_blank" rel="no-opener" href={metaUri}>View Arweave Data</a>
-        )
-      } */}
 
 
     </>
