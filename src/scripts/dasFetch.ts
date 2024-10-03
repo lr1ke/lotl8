@@ -43,3 +43,52 @@
 
 
 
+        // const filteredAssets1 = assetsByOwner.filter(asset => asset.hasOwnProperty('permanentFreezeDelegate'));
+        // console.log("Filtered Assets1: ", filteredAssets1);
+
+        // const filteredAssets2 = assetsByOwner.filter(asset => !asset.hasOwnProperty('permanentFreezeDelegate'));
+        // console.log("Filtered Assets2: ", filteredAssets2);
+
+        // const filteredAssets3 = assetsByOwner.filter(asset => asset.hasOwnProperty('royalties'));
+        // console.log("Filtered Assets3: ", filteredAssets3);
+
+        // let nftPic = "";
+        // setNftPic(nftPic);
+
+    //     // Iterate through the array of assets
+    //     assetsByOwner.forEach(asset => {
+    //       // Check if the asset has the 'attributeList'
+    //       if (asset.attributes && asset.attributes.attributeList) {
+    //         // Iterate through the attributeList array
+    //         asset.attributes.attributeList.forEach(attribute => {
+    //           // Check if the key is 'image'
+    //           if (attribute.key === 'image') {
+    //             console.log("Image URL:", attribute.value); // Logs the image URL
+    //             nftPic = attribute.value;
+    //           }
+    //         });
+    //       }
+    //     });
+
+    //     const firstImageValue = assetsByOwner[0].attributes.attributeList.find(attr => attr.key === 'image').value;
+    //     console.log(firstImageValue);
+
+
+    //     if (filteredAssets3.length > 0) {
+    //         const pk = filteredAssets3[0].owner;
+    //         console.log("pk ", pk);
+    //     } else {
+    //         console.log("No items found in filteredAssets3");
+    //     }
+
+    //     console.log("Assets fetched: ", assetsByOwner);
+    // };
+
+    // // display function outputs to ui
+    // const outputs = [
+    //     {
+    //         title: 'Asset ID...',
+    //         dependency: owner,
+    //         href: `https://solscan.io/token/${owner}?cluster=devnet`,
+    //     }
+    // ];

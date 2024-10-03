@@ -35,7 +35,7 @@ const Echoing = () => {
   }
 
   
-    //Mint Soulbound NFT, asset
+    //Mint Soulbound NFT
     const handleSoulboundClick = async (event: { preventDefault: () => void }) => {
       event.preventDefault();
     
@@ -108,7 +108,7 @@ const Echoing = () => {
         const metaUri = await uploadMetadata(noteUri, picUri); // Include note, image URI in metadata, upload
         setMetaUri(metaUri);
         console.log("Uploaded Metadata:", metaUri);
-        const fetchedAsset = await mintSouldbound(metaUri, noteUri, wallet); // Mint the NFT
+        const fetchedAsset = await mintSouldbound(metaUri, picUri, wallet); // Mint the NFT
         console.log("Asset Created:", fetchedAsset);
     
       } catch (error) {
@@ -190,15 +190,15 @@ const Echoing = () => {
             const metaUri = await uploadMetadata(noteUri, picUri); //upload metadata, include noteUri and picUri
             setMetaUri(metaUri);
             console.log("Uploaded Metadata:", metaUri);
-            const { assetAddress } = await mintRoyalty(metaUri ,picUri,  wallet); //mint NFT /w royalties
-            console.log("Asset Address:", assetAddress);
+            const fetchedAsset = await mintRoyalty(metaUri, picUri, wallet); // Mint the NFT
+            console.log("Asset Created:", fetchedAsset);
     
           } catch (error) {
           console.error("Error during NFT minting:", error);
           }
         }
 
-            //Mint Collection Soulbound
+      //Mint Collection Soulbound
       const handleCollectionSoulbound = async (event: { preventDefault: () => void}) => {
         //prevent react app from resetting
         event.preventDefault();
@@ -271,7 +271,7 @@ const Echoing = () => {
             const metaUri = await uploadMetadataColl( picUri); //upload metadata, include noteUri and picUri
             setMetaUri(metaUri);
             console.log("Uploaded Metadata:", metaUri);
-            const  fetchedCollection  = await mintSoulboundCollection(metaUri); //mint NFT /w royalties
+            const  fetchedCollection  = await mintSoulboundCollection(metaUri ); //mint NFT /w royalties
             console.log("FetchedSoulboundCollection:", fetchedCollection);    
             fetchedCollectionSoul = fetchedCollection;
           } catch (error) {

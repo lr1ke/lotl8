@@ -1,29 +1,28 @@
-//Create soulbound nft collection, asset
 
-import { generateSigner, percentAmount, createSignerFromKeypair, signerIdentity } from '@metaplex-foundation/umi'
+import { generateSigner, publicKey, now, dateTime, formatDateTime } from '@metaplex-foundation/umi'
 import { base58 } from '@metaplex-foundation/umi/serializers';
 import { createCollection, create, pluginAuthority, ruleSet, fetchAsset, fetchCollection} from '@metaplex-foundation/mpl-core'
 import { createUmi } from '@metaplex-foundation/umi-bundle-defaults';
 import { walletAdapterIdentity } from '@metaplex-foundation/umi-signer-wallet-adapters';
 
 
+
 export const mintRoyalty = async ( metadataUri: any, picUri: any, wallet: any) => {
-const umi = createUmi('https://api.devnet.solana.com')
-umi.use(walletAdapterIdentity(wallet));
 
-
-
-    // Generate the Asset PublicKey
+    const umi = createUmi('https://api.devnet.solana.com')
+    umi.use(walletAdapterIdentity(wallet));
     const asset = generateSigner(umi)
     console.log("Asset Address: \n", asset.publicKey.toString())
-      
 
-    // Generate the Asset
+    //set date
+    let datum = formatDateTime(now());
+    console.log("Time: ", datum);
+      
+    // Generate NFT w/ Royalties
     const assetTx = await create(umi, {
-        asset: asset,
-        // collection: collection,
-        name: 'Royalty NFT',
+        name: datum,
         uri: metadataUri,
+        asset: asset,
         plugins: [
             {
                 type: 'Royalties',
@@ -33,16 +32,16 @@ umi.use(walletAdapterIdentity(wallet));
                             address: asset.publicKey,
                             percentage: 100,
                         },
-
                     ],
-                    ruleSet: ruleSet('None'), // Compatibility rule set
+                    ruleSet: ruleSet('None'), 
                 },
-            {
-                type: "Attributes",
-                attributeList: [
-                    {key: "image", value: picUri }
-                ]
-            }
+                {
+                    type: "Attributes",
+                    attributeList: [
+                        {key: "image", value: picUri },
+                        {key: "datum", value: datum }
+                    ]
+                }
             
         ]
     }).sendAndConfirm(umi);
@@ -57,10 +56,7 @@ umi.use(walletAdapterIdentity(wallet));
     console.log("Verify that the Asset has been Minted: \n", fetchedAsset);
     console.log("Asset Created: https://solana.fm/tx/" + base58.deserialize(assetTx.signature)[0] + "?cluster=devnet-alpha");
 
-
-    return {
-        assetAddress: asset.publicKey.toString(),
-      };
+    return fetchedAsset
     };
 
 
