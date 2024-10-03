@@ -190,7 +190,7 @@ const Echoing = () => {
             const metaUri = await uploadMetadata(noteUri, picUri); //upload metadata, include noteUri and picUri
             setMetaUri(metaUri);
             console.log("Uploaded Metadata:", metaUri);
-            const { assetAddress } = await mintRoyalty(metaUri , wallet); //mint NFT /w royalties
+            const { assetAddress } = await mintRoyalty(metaUri ,picUri,  wallet); //mint NFT /w royalties
             console.log("Asset Address:", assetAddress);
     
           } catch (error) {
@@ -354,7 +354,7 @@ const Echoing = () => {
             const metaUri = await uploadMetadata(noteUri, picUri); //upload metadata, include noteUri and picUri
             setMetaUri(metaUri);
             console.log("Uploaded Metadata:", metaUri);
-            const { assetAddress } = await mintRoyalty(metaUri , wallet); //mint NFT /w royalties
+            const { assetAddress } = await mintRoyalty(metaUri , picUri, wallet); //mint NFT /w royalties
             console.log("Asset Address:", assetAddress);
     
           } catch (error) {

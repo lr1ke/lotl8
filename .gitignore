@@ -36,8 +36,10 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-wallet.json
+src/wallet.json
 **/wallet.json
 
 walletCollection.json
 ++/walletCollection.json
+
+src/walletCollection.json

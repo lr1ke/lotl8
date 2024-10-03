@@ -10,6 +10,7 @@
   "dependencies": {
     "@bundlr-network/client": "^0.11.17",
     "@dialectlabs/blinks": "^0.8.0",
+    "@heroicons/react": "^2.1.5",
     "@metaplex-foundation/digital-asset-standard-api": "^1.0.4",
     "@metaplex-foundation/js": "^0.20.1",
     "@metaplex-foundation/mpl-core": "^1.1.1",
@@ -33,7 +34,8 @@
     "next": "14.2.5",
     "pino-pretty": "^11.2.2",
     "react": "^18.3.1",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "react-toastify": "^10.0.5"
   },
   "devDependencies": {
     "@types/node": "^20",

@@ -7,7 +7,7 @@ import { createUmi } from '@metaplex-foundation/umi-bundle-defaults';
 import { walletAdapterIdentity } from '@metaplex-foundation/umi-signer-wallet-adapters';
 
 
-export const mintRoyalty = async ( metadataUri: any, wallet: any) => {
+export const mintRoyalty = async ( metadataUri: any, picUri: any, wallet: any) => {
 const umi = createUmi('https://api.devnet.solana.com')
 umi.use(walletAdapterIdentity(wallet));
 
@@ -37,6 +37,12 @@ umi.use(walletAdapterIdentity(wallet));
                     ],
                     ruleSet: ruleSet('None'), // Compatibility rule set
                 },
+            {
+                type: "Attributes",
+                attributeList: [
+                    {key: "image", value: picUri }
+                ]
+            }
             
         ]
     }).sendAndConfirm(umi);
