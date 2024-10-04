@@ -15,21 +15,23 @@ export default function Home() {
       </div>
 
       <div className="flex flex-col items-center justify-center text-center mt-16">
-        <h2 className="text-4xl font-bold mb-4">
-          Echolotl
+        <h2 className="text-4xl font-bold mb-8">
+          Lotl
+
         </h2>
+        
         <h3 className="text-xl font-bold opacity-50 mb-4">Decentralizing the future of collective memory</h3>
       </div>
 
       <div className="mb-32 grid text-center lg:mb-0 lg:w-full lg:max-w-5xl lg:grid-cols-4 lg:text-left">
         <a
-          href=""
+          href="lot-y"
           className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
           target="_blank"
           rel="noopener noreferrer"
         >
           <h2 className="mb-3 text-2xl font-semibold">
-            Echolot-y{" "}
+            Lot-y{" "}
             <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
               -&gt;
             </span>
@@ -40,24 +42,24 @@ export default function Home() {
         </a>
 
         <a
-          href="/library"
+          href="/lot-i"
           className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
           target="_blank"
           rel="noopener noreferrer"
         >
           <h2 className="mb-3 text-2xl font-semibold">
-            Echolot-i{" "}
+            Lot-i{" "}
             <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
               -&gt;
             </span>
           </h2>
           <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Archive of self.
+            All your notes
           </p>
         </a>
 
         <a
-          href="/about"
+          href="/echoing"
           className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
           target="_blank"
           rel="noopener noreferrer"
@@ -69,7 +71,7 @@ export default function Home() {
             </span>
           </h2>
           <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Your dojo | practice
+            Practice 
           </p>
         </a>
 
@@ -86,7 +88,7 @@ export default function Home() {
             </span>
           </h2>
           <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Find out more about.
+            Idea, philosophy, guidelines 
           </p>
         </a>
       </div>

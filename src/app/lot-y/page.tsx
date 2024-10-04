@@ -23,7 +23,7 @@ interface Collection {
   uri: string;
 }
 
-interface NFTAsset {
+interface NftAsset {
   name: string;
   owner: string;
   href: string;
@@ -46,7 +46,7 @@ const Loty = () => {
     const umi = createUmi('https://api.devnet.solana.com');
     umi.use(walletAdapterIdentity(wallet));
 
-    // Fetch collection data when the page loads
+    // Fetch collection props as number minted when the page loads
     useEffect(() => {
       const fetchCollectionData = async () => {
           const collectionId = umiPublicKey("HjB7oVk1Bvog9UVN6sPW6CTWMXMW2qE6cxSZ8GU8pf1w");
@@ -109,76 +109,41 @@ const Loty = () => {
     }
 };
 
+// const handleFetchRoyaltyClick = async () => {
+//   try {
+//     const assetsInCollection = await handleFetchAllClick();  
+    
+//     // Filter assets that have the 'royalties' property set
+//     const fetchedAssetsWithRoyalties = assetsInCollection.filter(asset => asset.royalties?.basisPoints);
+    
+//     // Map over the filtered assets to construct your desired data format
+//     const mappedAssets = fetchedAssetsWithRoyalties.map(asset => {
+//       const imageAttr = asset.attributes?.attributeList?.find(attr => attr.key === 'image');
+//       const nftPic = imageAttr ? imageAttr.value : null;
+//       const datumAttr = asset.attributes?.attributeList?.find(attr => attr.key === 'datum');
+//       const datum = datumAttr ? datumAttr.value : null;
+//       const basisPoints = asset.royalties?.basisPoints ?? null;
 
+      
+//       return {
+//         name: asset.name,
+//         owner: asset.owner,
+//         href: `https://solscan.io/token/${asset.publicKey}?cluster=devnet`,
+//         nftPic,
+//         datum,
+//         royalties: asset.royalties.basisPoints
+//       };
+//     });
 
+//     // Update the state with the filtered assets
+//     setNftAssets(mappedAssets);
+//   } catch (error) {
+//     console.error("Error fetching assets with royalties:", error);
+//     // Optionally show a user-friendly message
+//     toast.error("Failed to fetch NFTs with royalties.");
+//   }
+// };
 
-// object i get back from fetch collection 
-// Object
-// currentSize
-// : 
-// 12
-// header
-// : 
-// {executable: false, owner: 'CoREENxT6tW1HoK8ypY1SxRMZTcVPm7R94rH4PZNhX7d', lamports: {…}, rentEpoch: 18446744073709551616n, exists: true}
-// key
-// : 
-// 5
-// name
-// : 
-// "Lotl NFT Collection"
-// numMinted
-// : 
-// 12
-// pluginHeader
-// : 
-// undefined
-// publicKey
-// : 
-// "HjB7oVk1Bvog9UVN6sPW6CTWMXMW2qE6cxSZ8GU8pf1w"
-// updateAuthority
-// : 
-// "6Vvytu5a9s3yAg88s9h3SnKfwuAZdwV3dLZ1kv6CSuqQ"
-// uri
-// : 
-// "someUri"
-// [[Prototype]]
-// : 
-
-
-
-// const handlefetchSoulbound = async (event: React.FormEvent) => {
-//   event.preventDefault();
-
-// }
-
-
-
-//   const handlefetchRoyalty = async (event: React.FormEvent) => {
-//     event.preventDefault();
-
-// }
-
-
-
-
-
-
-// Extract NFT information
-// const fetchedAssets = all.map((asset: any) => {
-//   const imageAttr = asset.attributes?.attributeList?.find((attr: any) => attr.key === 'image');
-//   const nftPic = imageAttr ? imageAttr.value : null;
-//   const datumAttr = asset.attributes?.attributeList?.find((attr: any) => attr.key === 'datum');
-//   const datum = datumAttr ? datumAttr.value : null;
-
-//   return {
-//       // name: asset.name,
-//       owner: asset.owner,
-//       href: `https://solscan.io/token/${asset.publicKey}?cluster=devnet`,
-//       nftPic,
-//       datum,
-//   };
-// });
-// setNftAssets(fetchedAssets);
 
 
 
