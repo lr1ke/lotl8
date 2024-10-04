@@ -25,6 +25,11 @@ const Loti = () => {
     const handlefetchOwnerClick = async (event: React.FormEvent) => {
         event.preventDefault();
 
+        
+        if (!wallet || !wallet.publicKey) {
+            console.error('Wallet not connected or public key unavailable');
+            return;
+        }
         const umi = createUmi('https://api.devnet.solana.com');
         umi.use(walletAdapterIdentity(wallet));
 
@@ -47,6 +52,9 @@ const Loti = () => {
             const nftPic = imageAttr ? imageAttr.value : null;
             const datumAttr = asset.attributes?.attributeList?.find(attr => attr.key === 'datum');
             const datum = datumAttr ? datumAttr.value : null;
+            // const pubKey = asset.
+            // const owner = asset.
+            // const name = asset.
 
             return {
                 name: asset.name,
@@ -60,6 +68,8 @@ const Loti = () => {
         setNftAssets(fetchedAssets);
     };
 
+
+    // for image zoom out
     const closeModal = () => {
         setSelectedImage(null);
     };

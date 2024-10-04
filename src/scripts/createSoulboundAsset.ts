@@ -6,6 +6,9 @@ import { base58 } from '@metaplex-foundation/umi/serializers';
 
 
 export const mintSouldbound = async (metadataUri: any, picUri: any, wallet: any) => {
+    // if (!wallet || !wallet.publicKey) {
+    //     console.error('Wallet not connected or public key unavailable');
+    // }
 
     const umi = createUmi('https://api.devnet.solana.com');
     umi.use(walletAdapterIdentity(wallet));
