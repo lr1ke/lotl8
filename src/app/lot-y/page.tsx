@@ -6,7 +6,6 @@ import { createUmi } from '@metaplex-foundation/umi-bundle-defaults';
 import { walletAdapterIdentity } from '@metaplex-foundation/umi-signer-wallet-adapters';
 import { fetchAssetsByOwner } from '@metaplex-foundation/mpl-core';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { toast } from 'react-toastify';
 import { any } from 'prop-types';
 import { fetchCollection, fetchAssetsByCollection } from '@metaplex-foundation/mpl-core'
 import { publicKey as umiPublicKey} from '@metaplex-foundation/umi';
@@ -39,8 +38,8 @@ interface NftAsset {
 
 const Loty = () => {
     const [selectedImage, setSelectedImage] = useState<string | null>(null); //für zoom
-    const [owner, setOwner] = React.useState<string>("");
-    const [all, setAll] = useState<any[]>([]);
+    // const [owner, setOwner] = React.useState<string>("");
+    // const [all, setAll] = useState<any[]>([]);
     const [nftAssets, setNftAssets] = useState<NftAsset[]>([]);
     const [collectionAll, setCollectionAll] = useState<Collection | null>(null);
     const [selectedNft, setSelectedNft] = useState<NftAsset | null>(null);  // To track the selected NFT
@@ -70,9 +69,6 @@ const Loty = () => {
   }, [wallet, umi, collectionAll]);
 
 
-
-  // const nftAssets: NftAsset[] = [/* Your NFT data here */];
-
       // Handle the click on the "Detail" button
       const handleShowDetails = (nft: NftAsset) => {
         setSelectedNft(nft);  // Set the selected NFT
@@ -84,7 +80,6 @@ const Loty = () => {
     };
 
 
-  
   const handleFetchAllClick = async () => {
     // Ensure wallet is connected
     if (!wallet || !wallet.publicKey) {

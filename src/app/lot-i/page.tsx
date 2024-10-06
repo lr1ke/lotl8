@@ -8,7 +8,6 @@ import { fetchAssetsByOwner } from '@metaplex-foundation/mpl-core';
 import { publicKey as umiPublicKey } from "@metaplex-foundation/umi";
 import { PublicKey } from "@solana/web3.js"; // For converting the Solana wallet public key if needed
 import { useWallet } from '@solana/wallet-adapter-react';
-import { toast } from 'react-toastify';
 import Image from 'next/image';
 import { any } from 'prop-types';
 import { ConnectWallet } from "@/components/ui/ConnectWallet";
@@ -16,17 +15,24 @@ import { faQuestionCircle, faHome } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 
-
-
-// import { ExternalLinkIcon } from '@heroicons/react/outline';
-
+interface NftAsset {
+  name: string;
+  owner: string;
+  href: string;
+  nftPic: string | null;
+  datum: string | null;
+  basisPoints: number | null; // Either a number for royalties or null if no royalties
+}
 
 
 const Loti = () => {
     const [owner, setOwner] = React.useState<string>("");
-    const [selectedImage, setSelectedImage] = useState<string | null>(null);
+    const [selectedImage, setSelectedImage] = useState<string | null>(null);//for zooming
+    const [nftAssets, setNftAssets] = useState<NftAsset[]>([]);
     const wallet = useWallet();
-    const [nftAssets, setNftAssets] = useState<any[]>([]);
+    const [selectedNft, setSelectedNft] = useState<NftAsset | null>(null);  // To track the selected NFT
+
+
 
     const handlefetchOwnerClick = async (event: React.FormEvent) => {
         event.preventDefault();
@@ -47,20 +53,19 @@ const Loti = () => {
         const owner = umiPublicKey(wallet.publicKey);
         setOwner(owner);
 
+
+        try {
         // Fetch all NFTs by owner
         const assetsByOwner = await fetchAssetsByOwner(umi, owner, {
             skipDerivePlugins: false,
         });
-
         // Extract NFT information and update the state
         const fetchedAssets = assetsByOwner.map(asset => {
             const imageAttr = asset.attributes?.attributeList?.find(attr => attr.key === 'image');
             const nftPic = imageAttr ? imageAttr.value : null;
             const datumAttr = asset.attributes?.attributeList?.find(attr => attr.key === 'datum');
             const datum = datumAttr ? datumAttr.value : null;
-            // const pubKey = asset.
-            // const owner = asset.
-            // const name = asset.
+            const basisPoints = asset.royalties?.basisPoints ?? null;
 
             return {
                 name: asset.name,
@@ -68,17 +73,31 @@ const Loti = () => {
                 href: `https://solscan.io/token/${asset.publicKey}?cluster=devnet`,
                 nftPic,
                 datum,
+                basisPoints,
             };
         });
-
+        // Update the state with the fetched assets
         setNftAssets(fetchedAssets);
-    };
-
+        console.log('Fetched assets:', fetchedAssets);
+    } catch (error) {
+        console.error('Error fetching assets from collection:', error);
+    }
+};
 
     // for image zoom out
     const closeModal = () => {
         setSelectedImage(null);
     };
+
+          // Handle the click on the "Detail" button
+          const handleShowDetails = (nft: NftAsset) => {
+            setSelectedNft(nft);  // Set the selected NFT
+        };
+    
+        // Close details
+        const handleCloseDetails = () => {
+            setSelectedNft(null);  // Reset selected NFT to hide the details
+        };
 
     return (
         <>
@@ -136,44 +155,78 @@ const Loti = () => {
                                             )}
 
 <div className="mt-2 flex items-start space-x-1">
-  <button
-    onClick={() => console.log(`Details of ${nft.name}`)}
-    className="bg-white text-gray-600 p-1 text-xs rounded border border-gray-300 hover:bg-gray-100 transition opacitiy-50"
-  >
-    <FontAwesomeIcon icon={faQuestionCircle} className="h-4 w-4 text-gray-500" />
-  </button>
 
-</div>
+                            <button
+                                onClick={() => handleShowDetails(nft)}
+                              className="bg-white text-gray-600 p-1 text-xs rounded border border-gray-300 hover:bg-gray-100 transition opacitiy-50"
+                            >
+                              <FontAwesomeIcon icon={faQuestionCircle} className="h-4 w-4 text-gray-500" />
+                            </button>
+
+                          </div>
 
 
-
-                                        </div>
-                                    ))
-                                ) : (
-                                    <p className="col-span-2 text-center">No NFTs found</p>
-                                )}
-                            </div>
+                                </div>
+                              ))
+                            ) : (
+                              <p className='col-span-2 '>Click a button! <br/> Check if your wallet is connected!</p>
+                            )}
+                          </div>
                         </div>
-    
+
                         {selectedImage && (
-                            <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50">
-                                <div className="relative">
+                            <div className='fixed inset-0 flex justify-center items-center bg-black bg-opacity-50'>
+                                <div className='relative'>
                                     <img
                                         src={selectedImage}
                                         alt="Zoomed NFT"
-                                        className="max-w-full max-h-full"
+                                        className='max-w-full max-h-full'
                                     />
                                     <button
                                         onClick={closeModal}
-                                        className="absolute top-2 right-2 bg-white text-black rounded-full p-1 hover:bg-gray-300"
+                                        className='absolute top-2 right-2 bg-white text-black rounded-full p-1 hover:bg-gray-300'
                                     >
                                         Close
                                     </button>
                                 </div>
                             </div>
                         )}
+
                     </div>
                 </div>
+
+                                {/* Show NFT details when an NFT is selected */}
+                                {selectedNft && (
+                    <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50">
+                        <div className="bg-white p-4 rounded-lg shadow-md">
+                            <h2 className="text-xl font-semibold mb-4">NFT Details</h2>
+                            <p><strong>Date:</strong>{selectedNft.name}</p>
+                            <p><strong>Owner:</strong> {selectedNft.owner}</p>
+
+                            <p><strong>Type:</strong> 
+                              {selectedNft.basisPoints !== null 
+                                ? `${selectedNft.basisPoints / 100}% Royalties`  // Divide by 100 to convert to percentage
+                                : 'Soulbound NFT'}
+                            </p>
+                            <p>
+                            <a 
+                              href={selectedNft.href} 
+                              target="_blank" 
+                              rel="noopener noreferrer" 
+                              className="bg-white transition-all border border-gray-300 duration-200  p-2 mt-4 rounded inline-block text-center hover:bg-gray-100"
+                            >
+                              View on Solscan
+                            </a>
+                            </p>
+                            <button
+                              onClick={handleCloseDetails}
+                              className="bg-gradient-to-r from-green-300 to-blue-300 hover:from-pink-300 hover:to-yellow-200 text-blue-800 transition-all duration-200 border-2 border-transparent text-white p-2 mt-4 rounded"
+                            >
+                              Close
+                            </button>
+                        </div>
+                    </div>
+                )}
             </div>
         </>
     );
