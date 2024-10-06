@@ -16,7 +16,6 @@ const walletPrivateKeyUint8Array = new Uint8Array(walletPrivateKeyArray);
 console.log(walletPrivateKeyUint8Array);
 
 
-
 export const uploadText = async (text: string) => {
 
     const umi = createUmi("https://api.mainnet-beta.solana.com", "finalized")

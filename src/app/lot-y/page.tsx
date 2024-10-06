@@ -10,6 +10,10 @@ import { toast } from 'react-toastify';
 import { any } from 'prop-types';
 import { fetchCollection, fetchAssetsByCollection } from '@metaplex-foundation/mpl-core'
 import { publicKey as umiPublicKey} from '@metaplex-foundation/umi';
+import { ConnectWallet } from "@/components/ui/ConnectWallet";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faQuestionCircle, faHome } from '@fortawesome/free-solid-svg-icons';
+
 
 
 interface Collection {
@@ -17,7 +21,6 @@ interface Collection {
   key: number;
   name: string;
   numMinted: number;
-  // pluginHeader?: any; // Adjust the type if you have more information about it
   publicKey: string;
   updateAuthority: string;
   uri: string;
@@ -160,14 +163,30 @@ const Loty = () => {
                         <h1 className="text-2xl font-semibold mb-4 opacity-50 text-center">Lot-y</h1>
                         <h2 className="text-xl font-semibold mb-4 text-center opacity-80"> Sanctuary for all notes</h2>
                         <h3 className="text-sm mb-8 text-center opacity-50"> current collection size: {collectionAll?.currentSize}</h3>
+                        <h4 className="text-sm mb-8 text-center opacity-50">Browse the Lotl NFT Collection</h4>
                         <div className='p-4'>
-                          <div className='flex justify-between items-center'>
+                        <ConnectWallet />
+                        <div className="flex flex-col space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0">
+                        <button
+                              onClick={handleFetchAllClick}
+                              className='flex-1 bg-gradient-to-r from-pink-300 to-yellow-200 hover:from-green-300 hover:to-blue-300 text-blue-800 p-2 transition-all duration-200 border-2 border-transparent hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed'
+                              disabled={!wallet || !wallet.publicKey}
+                            >
+                              Whole Lotl Collection
+                            </button>
                             <button
                               onClick={handleFetchAllClick}
                               className='flex-1 bg-gradient-to-r from-pink-300 to-yellow-200 hover:from-green-300 hover:to-blue-300 text-blue-800 p-2 transition-all duration-200 border-2 border-transparent hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed'
                               disabled={!wallet || !wallet.publicKey}
                             >
-                              Show all NFTs in Lotl Collection
+                              Only Soulbound NFTs
+                            </button>
+                            <button
+                              onClick={handleFetchAllClick}
+                              className='flex-1 bg-gradient-to-r from-pink-300 to-yellow-200 hover:from-green-300 hover:to-blue-300 text-blue-800 p-2 transition-all duration-200 border-2 border-transparent hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed'
+                              disabled={!wallet || !wallet.publicKey}
+                            >
+                              Only tradeable NFTs
                             </button>
                           </div>
 
@@ -176,14 +195,14 @@ const Loty = () => {
                                     nftAssets.map((nft, index) => (
                                 <div key={nft.href} className='bg-white-100 rounded-lg p-4 shadow'>
                                   <h2 className='text-md opacity-50 mb-2'>{nft.datum}</h2>
-                                  <a
+                                  {/* <a
                                     href={nft.href}
                                     target='_blank'
                                     rel='noopener noreferrer'
                                     className='text-blue-500 italic hover:text-blue-700 transition-all duration-200 mb-2 block'
                                   >
                                     {nft.owner.slice(0, 19)}...
-                                  </a>
+                                  </a> */}
                                   {nft.nftPic ? (
                                     <img
                                       onClick={() => setSelectedImage(nft.nftPic)}
@@ -196,12 +215,33 @@ const Loty = () => {
                                   ) : (
                                     <p>No image available</p>
                                   )}
-{nft.basisPoints ? (
+
+<div className="mt-2 flex items-start space-x-1">
+  <button
+    onClick={() => console.log(`Details of ${nft.name}`)}
+    className="bg-white text-gray-600 p-1 text-xs rounded border border-gray-300 hover:bg-gray-100 transition opacitiy-50"
+  >
+    <FontAwesomeIcon icon={faQuestionCircle} className="h-4 w-4 text-gray-500" />
+  </button>
+  <button
+    onClick={() => console.log(`Owner: ${nft.owner}`)}
+    className="bg-white text-gray-600 p-1 text-xs rounded border border-gray-300 hover:bg-gray-100 transition opacitiy-50"
+  >
+    <FontAwesomeIcon icon={faHome} className="h-4 w-4 text-grey-500" />
+  </button>
+</div>
+
+
+
+
+
+
+{/* {nft.basisPoints ? (
     <p>w/ Royalties: {nft.basisPoints / 100}%</p> // Divide by 100 to convert to percentage
 ) : (
     <p>Soulbound</p>
 )}
-
+ */}
 
                                 </div>
                               ))

@@ -1,7 +1,7 @@
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
 import { createGenericFile, createSignerFromKeypair, signerIdentity } from "@metaplex-foundation/umi";
 import { irysUploader } from "@metaplex-foundation/umi-uploader-irys";
-// import wallet from "../wallet.json";
+
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -14,13 +14,9 @@ const walletPrivateKeyUint8Array = new Uint8Array(walletPrivateKeyArray);
 console.log(walletPrivateKeyUint8Array);
 
 
-
-
-
 export const uploadImage = async (blob: Blob) => {
   const umi = createUmi("https://api.mainnet-beta.solana.com", "finalized");
   let keypair = umi.eddsa.createKeypairFromSecretKey(new Uint8Array(walletPrivateKeyUint8Array));
-  // const keypair = umi.eddsa.createKeypairFromSecretKey(new Uint8Array(JSON.parse(walletPrivateKey)));
 
   const myKeypairSigner = createSignerFromKeypair(umi, keypair);
   umi.use(signerIdentity(myKeypairSigner)).use(irysUploader());

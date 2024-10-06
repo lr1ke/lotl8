@@ -10,7 +10,6 @@ import { mintSouldbound } from '@/scripts/createSoulboundAsset';
 import { mintRoyalty } from '@/scripts/createRoyaltyNFT';
 import html2canvas from "html2canvas";
 import { uploadImage } from "@/scripts/uploadImage";
-// import { fetchAssetOwner } from '../api/fetchAssetsOwner';
 
 
 
@@ -189,77 +188,78 @@ const Echoing = () => {
 
 
 
-  return (
-    <>
-            <div className="flex min-h-screen flex-col items-center justify-between p-16">
-                <div className="relative z-[-1] flex place-items-center before:absolute before:h-[300px] before:w-full before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 sm:before:w-[480px] sm:after:w-[240px] before:lg:h-[360px]">
-                    <img
-                        className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-                        src="/werkstatt.jpg"
-                        alt="Logo"
-                        width={360}
-                        height={72}
-                    />
-                </div>
+        return (
+          <>
+              <div className="flex min-h-screen flex-col items-center justify-between p-4 sm:p-8">
+                  <div className="relative z-[-1] flex place-items-center before:absolute before:h-[300px] before:w-full before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 sm:before:w-[480px] sm:after:w-[240px] before:lg:h-[360px]">
+                      <img
+                          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
+                          src="/werkstatt.jpg"
+                          alt="Logo"
+                          width={360}
+                          height={72}
+                      />
+                  </div>
+      
+                  <div className="flex-grow container mx-auto mt-10 px-4 sm:px-4">
+                      <div className="max-w-3xl mx-auto bg-white p-4 sm:p-6 rounded-lg flex flex-col">
+                          <div>
+                              <h2 className="text-xl mb-4 font-semibold text-center">Your Dojo</h2>
+                              <form>
+                                  <div ref={contentRef}>
+                                      <textarea
+                                          id="content"
+                                          name="content"
+                                          required
+                                          value={content}
+                                          onChange={(e) => {
+                                              setContent(e.target.value);
+                                              setCharCount(e.target.value.length);
+                                          }}
+                                          className="mb-4 border-blue-400 rounded-md h-80 w-full p-2"
+                                          placeholder="This resonates with my heart, echos in my head..."
+                                          maxLength={250}
+                                      ></textarea>
+                                      <p>{charCount}/250</p>
+                                  </div>
+                              </form>
+      
+                              <div className="flex flex-col sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0 mb-4">
+                                  <button
+                                      type="button"
+                                      onClick={handleSoulboundClick}
+                                      className="w-full sm:w-auto bg-gradient-to-r from-pink-300 to-yellow-200 hover:from-green-300 hover:to-blue-300 text-white py-2 px-4 rounded-md"
+                                  >
+                                      Soulbound NFT
+                                  </button>
+      
+                                  <button
+                                      type="button"
+                                      onClick={handleRoyaltyClick}
+                                      className="w-full sm:w-auto bg-gradient-to-r from-pink-300 to-yellow-200 hover:from-green-300 hover:to-blue-300 text-white py-2 px-4 rounded-md"
+                                  >
+                                      NFT /w Royalties
+                                  </button>
+                                  <ConnectWallet />
 
-                <div className="flex-grow container mx-auto mt-10 px-4 sm:px:0">
-                    <div className="max-w-3xl mx-auto bg-white p-6 rounded-lg flex flex-col">
-                        <div>
-                            <h2 className="text-xl mb-4 font-semibold text-center">Your Dojo</h2>
-                            <form >
-                                <br />
-                                <div ref={contentRef}>
-                                <textarea
-                                    id="content"
-                                    name="content"
-                                    required
-                                    value={content}
-                                    onChange={(e) => {
-                                        setContent(e.target.value);
-                                        setCharCount(e.target.value.length);
-                                    }}
-                                    className="mb-4 border-blue-400 rounded-l-md h-80 w-full"
-                                    placeholder="this resonates with my heart, echos in my head..."
-                                    maxLength={250}
-                                ></textarea>
-                                <p>{charCount}/250</p>
-                                </div>
-                                <br />
-                            </form>
-                            <div className="flex space-x-4 mb-4">
-
-                                <button
-                                  type="button"
-                                  onClick={handleSoulboundClick}
-                                  className="flex-1 bg-gradient-to-r from-pink-300 to-yellow-200 hover:from-green-300 hover:to-blue-300 text-white p-2 rounded px-4 py-2 rounded-r-md"
-                                >Soulbound NFT
-                                </button>
-                                <button
-                                  type="button"
-                                  onClick={handleRoyaltyClick }
-                                  className="flex-1 bg-gradient-to-r from-pink-300 to-yellow-200 hover:from-green-300 hover:to-blue-300 text-white p-2 rounded px-4 py-2 rounded-r-md"
-                                >NFT /w Royalties
-                                </button>
-
-
-            
-                                </div>
-                                <ConnectWallet />                               
-                        </div>
-                    </div>
-                </div>
-                <div className="text-sm opacity-50">
-                    <h1>echo-ing...</h1>
-                    <p>Words that resonate in my heart.</p>
-                    <p>Diese Worte hallen wider in meinem Herzen</p>
-                    <p>Etwas, das nachhallt in meinem Kopf</p>
-                    <p>What resonates with me, reverberation</p>
-                    <p>Alltagssplitter, Fragment</p>
-                    <p>What is echoing in my head</p>
-                </div>
-            </div>
-    </>
-  );
-};
+                              </div>
+      
+                          </div>
+                      </div>
+                  </div>
+      
+                  <div className="text-sm opacity-50 text-center mt-8">
+                      <h1>echo-ing...</h1>
+                      <p>Words that resonate in my heart.</p>
+                      <p>Diese Worte hallen wider in meinem Herzen</p>
+                      <p>Etwas, das nachhallt in meinem Kopf</p>
+                      <p>What resonates with me, reverberation</p>
+                      <p>Alltagssplitter, Fragment</p>
+                      <p>What is echoing in my head</p>
+                  </div>
+              </div>
+          </>
+      );
+      };
 
 export default Echoing;
