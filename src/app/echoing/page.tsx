@@ -10,7 +10,7 @@ import { mintSouldbound } from '@/scripts/createSoulboundAsset';
 import { mintRoyalty } from '@/scripts/createRoyaltyNFT';
 import html2canvas from "html2canvas";
 import { uploadImage } from "@/scripts/uploadImage";
-import { fetchAssetOwner } from '../api/fetchAssetsOwner';
+// import { fetchAssetOwner } from '../api/fetchAssetsOwner';
 
 
 
@@ -22,16 +22,6 @@ const Echoing = () => {
   const contentRef = useRef<HTMLDivElement | null>(null);
 
   const wallet = useWallet();
-
-  let fetchedCollectionSoul = {};
-
-  const fetchedAssetsOwner = async () => {
-
-    const showAssetOwner = await fetchAssetOwner(wallet);
-    console.log("fetchedAsset: ", showAssetOwner);
-  }
-
-
 
   
     //Mint Soulbound NFT
@@ -250,12 +240,7 @@ const Echoing = () => {
                                   className="flex-1 bg-gradient-to-r from-pink-300 to-yellow-200 hover:from-green-300 hover:to-blue-300 text-white p-2 rounded px-4 py-2 rounded-r-md"
                                 >NFT /w Royalties
                                 </button>
-                                {/* <button
-                                  type="button"
-                                  onClick={handleFetchClick }
-                                  className="flex-1 bg-gradient-to-r from-pink-300 to-yellow-200 hover:from-green-300 hover:to-blue-300 text-white p-2 rounded px-4 py-2 rounded-r-md"
-                                >Fetch
-                                </button> */}
+
 
             
                                 </div>
