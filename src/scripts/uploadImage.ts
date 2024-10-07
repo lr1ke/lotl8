@@ -11,7 +11,6 @@ if (!walletPrivateKeyString) {
 }
 const walletPrivateKeyArray: number[] = JSON.parse(walletPrivateKeyString);
 const walletPrivateKeyUint8Array = new Uint8Array(walletPrivateKeyArray);
-console.log(walletPrivateKeyUint8Array);
 
 
 export const uploadImage = async (blob: Blob) => {

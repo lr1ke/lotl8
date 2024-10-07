@@ -1,7 +1,6 @@
 
 
 import React from 'react';
-// import { ConnectWallet } from "@/components/ui/ConnectWallet";
 
 export default function Navbar() {
   return (
@@ -15,7 +14,6 @@ export default function Navbar() {
           <a href="/lot-y" className="text-gray-300 hover:text-white">Lot-y</a>
           <a href="/lot-i" className="text-gray-300 hover:text-white">Lot-i</a>
           <a href="/echoing" className="text-gray-300 hover:text-white">Echoing</a>
-          {/* <ConnectWallet /> */}
         </div>
       </div>
     </nav>

@@ -13,10 +13,8 @@ import { walletAdapterIdentity } from '@metaplex-foundation/umi-signer-wallet-ad
 
     //set date
     let datum = formatDateTime(now());
-    console.log("Time: ", datum);
 
     const asset = generateSigner(umi)
-    console.log("Asset Address: \n", asset.publicKey.toString())
 
     // Generate NFT w/ Royalties
     const assetTx = await create(umi, {
@@ -27,12 +25,16 @@ import { walletAdapterIdentity } from '@metaplex-foundation/umi-signer-wallet-ad
         plugins: [
             {
                 type: 'Royalties',
-                basisPoints: 1500,
+                basisPoints: 2000,
                 creators: [
                         {
                             address: asset.publicKey,
-                            percentage: 100,
+                            percentage: 80,
                         },
+                        {
+                            address: collectionPublicKey,
+                            percentage: 20,
+                        }
                     ],
                     ruleSet: ruleSet('None'), 
                 },
@@ -45,16 +47,12 @@ import { walletAdapterIdentity } from '@metaplex-foundation/umi-signer-wallet-ad
                 }
         ]
     }).sendAndConfirm(umi);
-    console.log("asset has been created");
 
     // Deserialize the Signature from the Transaction
     const signature = base58.deserialize(assetTx.signature)[0];
-    console.log("Signature: \n", signature);
 
     // Fetch the Asset to verify that has been created
     const fetchedAsset = await fetchAsset(umi, asset.publicKey);
-    console.log("Verify that the Asset has been Minted: \n", fetchedAsset);
-    console.log("Asset Created: https://solana.fm/tx/" + base58.deserialize(assetTx.signature)[0] + "?cluster=devnet-alpha");
 
     return fetchedAsset
     };

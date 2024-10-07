@@ -23,8 +23,6 @@ let keypair = umi.eddsa.createKeypairFromSecretKey(new Uint8Array(walletPrivateK
 const myKeypairSigner = createSignerFromKeypair(umi, keypair);
 umi.use(signerIdentity(myKeypairSigner)).use(irysUploader());
 
-console.log("Uploading NFT metadata...");
-
     const metadata = {
         "name": "Lotl NFT",
         "symbol": "LTL",

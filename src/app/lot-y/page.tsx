@@ -53,7 +53,6 @@ const Loty = () => {
           const collectionId = umiPublicKey("HjB7oVk1Bvog9UVN6sPW6CTWMXMW2qE6cxSZ8GU8pf1w");
           try {
               const collection = await fetchCollection(umi, collectionId);
-              console.log("Collection: ", collection);
               setCollectionAll(collection);
           } catch (error) {
               console.error('Error fetching collection:', error);

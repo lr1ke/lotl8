@@ -13,8 +13,6 @@ if (!walletPrivateKeyString) {
 }
 const walletPrivateKeyArray: number[] = JSON.parse(walletPrivateKeyString);
 const walletPrivateKeyUint8Array = new Uint8Array(walletPrivateKeyArray);
-console.log(walletPrivateKeyUint8Array);
-
 
 export const uploadText = async (text: string) => {
 
@@ -23,10 +21,7 @@ export const uploadText = async (text: string) => {
     const myKeypairSigner = createSignerFromKeypair(umi, keypair);
     umi.use(signerIdentity(myKeypairSigner)).use(irysUploader());
     
-    console.log("Uploading note...");
-
 let genText = createGenericFile(text, 'my-file.txt', { contentType: "text/plain" });
-
 const textUri = await umi.uploader.upload([genText]);
 
 console.log(textUri);

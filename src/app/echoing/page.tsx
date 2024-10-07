@@ -33,7 +33,6 @@ const Echoing = () => {
 
   const wallet = useWallet();
 
-
   const processFetchedAsset = (fetchedAsset: any) => {
     const asset = {
       date: fetchedAsset.name,
@@ -57,9 +56,7 @@ const Echoing = () => {
     //Mint Soulbound NFT
     const handleSoulboundClick = async (event: { preventDefault: () => void }) => {
       event.preventDefault();
-    
-      console.log("Minting Soulbound NFT...");
-    
+        
       let picUri = "";
     
       if (contentRef.current) {
@@ -113,25 +110,18 @@ const Echoing = () => {
         if (blob) {
           try {
             const imageUri = await uploadImage(blob);//upload image blob
-            console.log('Uploaded Image:', imageUri);
             picUri = imageUri;
           } catch (error) {
-            console.error('Error during Image Upload:', error);
           }
         }
       }
           
       try {
         const [noteUri] = await uploadText(content); // Upload text content
-        console.log("Uploaded Text:", noteUri);
         const metaUri = await uploadMetadata(noteUri, picUri); // Include note, image URI in metadata, upload
         setMetaUri(metaUri);
-        console.log("Uploaded Metadata:", metaUri);
         const fetchedAsset = await mintSouldbound(metaUri, picUri, wallet); // Mint the NFT
-        console.log("Asset Created:", fetchedAsset);
         processFetchedAsset(fetchedAsset); //process and update the state
-
-    
       } catch (error) {
         console.error("Error during NFT minting:", error);
       }
@@ -142,8 +132,6 @@ const Echoing = () => {
         //prevent react app from resetting
         event.preventDefault();
         
-        console.log("Minting NFT /w Royalties...");
-
         let picUri = "";
     
         if (contentRef.current) {
@@ -197,7 +185,6 @@ const Echoing = () => {
           if (blob) {
             try {
               const imageUri = await uploadImage(blob);//upload image blob
-              console.log('Uploaded Image:', imageUri);
               picUri = imageUri;
             } catch (error) {
               console.error('Error during Image Upload:', error);
@@ -207,14 +194,10 @@ const Echoing = () => {
 
         try {
             const [noteUri] = await uploadText(content); //destrukturiere array text and geb erstes element []
-            console.log("Uploaded Text:", noteUri);
             const metaUri = await uploadMetadata(noteUri, picUri); //upload metadata, include noteUri and picUri
             setMetaUri(metaUri);
-            console.log("Uploaded Metadata:", metaUri);
             const fetchedAsset = await mintRoyalty(metaUri, picUri, wallet); // Mint the NFT
-            console.log("Asset Created:", fetchedAsset);
             processFetchedAsset(fetchedAsset); //process and update the state
-    
           } catch (error) {
           console.error("Error during NFT minting:", error);
           }

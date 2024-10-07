@@ -6,9 +6,7 @@ import { base58 } from '@metaplex-foundation/umi/serializers';
 
 
 export const mintSouldbound = async (metadataUri: any, picUri: any, wallet: any) => {
-    // if (!wallet || !wallet.publicKey) {
-    //     console.error('Wallet not connected or public key unavailable');
-    // }
+
 
     const umi = createUmi('https://api.devnet.solana.com');
     umi.use(walletAdapterIdentity(wallet));
@@ -27,10 +25,7 @@ export const mintSouldbound = async (metadataUri: any, picUri: any, wallet: any)
 
     const collectionPublicKey =  publicKey("HjB7oVk1Bvog9UVN6sPW6CTWMXMW2qE6cxSZ8GU8pf1w");
 
-    // Set date
     let datum = formatDateTime(now());
-    console.log("Time: ", datum);
-
     const asset = generateSigner(umi);
 
     // Generate the Soulbound NFT
@@ -54,16 +49,11 @@ export const mintSouldbound = async (metadataUri: any, picUri: any, wallet: any)
             }
         ]
     }).sendAndConfirm(umi);
-    console.log("Asset has been created");
-        // Deserialize the Signature from the Transaction
+
         const signature = base58.deserialize(assetTx.signature)[0];
-        console.log("Signature: \n", signature);
     
-        // Fetch the Asset to verify that has been created
         const fetchedAsset = await fetchAsset(umi, asset.publicKey);
         console.log("Verify that the Asset has been Minted: \n", fetchedAsset);
-        console.log("Asset Created: https://solana.fm/tx/" + base58.deserialize(assetTx.signature)[0] + "?cluster=devnet-alpha");
-    
         return fetchedAsset
     }
 
