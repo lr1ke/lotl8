@@ -37,7 +37,7 @@ export default function Home() {
             </span>
           </h2>
           <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Sanctuary for all notes
+            Sanctuary for All
           </p>
         </a>
 
@@ -54,7 +54,7 @@ export default function Home() {
             </span>
           </h2>
           <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            All your notes
+            Archive of Self
           </p>
         </a>
 
@@ -71,7 +71,7 @@ export default function Home() {
             </span>
           </h2>
           <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Practice 
+            Echoing Practice
           </p>
         </a>
 

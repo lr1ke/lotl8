@@ -1,7 +1,7 @@
 "use client"
 import * as React from 'react';
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { uploadText } from "@/scripts/uploadText";
 import { uploadMetadata } from "@/scripts/uploadMetadata";
@@ -11,16 +11,47 @@ import { mintRoyalty } from '@/scripts/createRoyaltyNFT';
 import html2canvas from "html2canvas";
 import { uploadImage } from "@/scripts/uploadImage";
 
+interface Asset {
+  date: string;
+  uriMeta: string,
+  owner:  string,
+  assetPk: string,
+  royalties?: number,
+  updateAuthority: string; 
+  attributes: { key: string; value: string }[];
+}
+
 
 
 const Echoing = () => { 
-  const [data, setData] = React.useState<string>('');
+  const [assetData, setAssetData] = useState<Asset | null>(null);
+
   const [content, setContent] = React.useState<string>("");
   const [charCount, setCharCount] = React.useState<number>(0);
   const [metaUri, setMetaUri] = React.useState<string>("");
   const contentRef = useRef<HTMLDivElement | null>(null);
 
   const wallet = useWallet();
+
+
+  const processFetchedAsset = (fetchedAsset: any) => {
+    const asset = {
+      date: fetchedAsset.name,
+      uriMeta: fetchedAsset.uri,      
+      owner: fetchedAsset.owner,
+      assetPk: fetchedAsset.publicKey,
+      royalties: fetchedAsset.royalties ? fetchedAsset.royalties.basisPoints : undefined,
+      //for soulbound field
+      updateAuthority: fetchedAsset.updateAuthority.address,
+      attributes: fetchedAsset.attributes.attributeList.map((attr: any) => ({
+        key: attr.key,
+        value: attr.value,
+      })),
+    };
+  
+    setAssetData(asset);
+  };
+  
 
   
     //Mint Soulbound NFT
@@ -98,6 +129,8 @@ const Echoing = () => {
         console.log("Uploaded Metadata:", metaUri);
         const fetchedAsset = await mintSouldbound(metaUri, picUri, wallet); // Mint the NFT
         console.log("Asset Created:", fetchedAsset);
+        processFetchedAsset(fetchedAsset); //process and update the state
+
     
       } catch (error) {
         console.error("Error during NFT minting:", error);
@@ -180,6 +213,7 @@ const Echoing = () => {
             console.log("Uploaded Metadata:", metaUri);
             const fetchedAsset = await mintRoyalty(metaUri, picUri, wallet); // Mint the NFT
             console.log("Asset Created:", fetchedAsset);
+            processFetchedAsset(fetchedAsset); //process and update the state
     
           } catch (error) {
           console.error("Error during NFT minting:", error);
@@ -200,11 +234,14 @@ const Echoing = () => {
                           height={72}
                       />
                   </div>
-      
+
                   <div className="flex-grow container mx-auto mt-10 px-4 sm:px-4">
+                  <h2 className="text-xl mb-7 font-semibold text-center"> Dojo</h2>
+
+
                       <div className="max-w-3xl mx-auto bg-white p-4 sm:p-6 rounded-lg flex flex-col">
                           <div>
-                              <h2 className="text-xl mb-4 font-semibold text-center">Your Dojo</h2>
+
                               <form>
                                   <div ref={contentRef}>
                                       <textarea
@@ -243,19 +280,34 @@ const Echoing = () => {
                                   <ConnectWallet />
 
                               </div>
-      
                           </div>
-                      </div>
+                      </div>                  
+
                   </div>
-      
+
+                  <div className="asset-info">
+                  {assetData ? (
+                    <div>
+                            <h3 className="text-2xl mb-6 text-center opacity-50">Successfully minted!</h3>
+
+                                <a 
+                                  href={`https://xray.helius.xyz/token/${assetData.assetPk}?network=devnet`}
+                                  target="_blank" 
+                                  rel="noopener noreferrer" 
+                                  className="bg-gradient-to-r from-green-300 to-blue-300 hover:from-pink-300 hover:to-yellow-200 text-blue-800 transition-all duration-200 border-2 border-transparent text-white p-2 mt-4 rounded"
+                                  >
+                                  View on helius
+                                </a>
+                                </div>
+) : (
+  <p className="text-center text-gray-500">Words, Works, Worlds</p>
+)}
+                </div>
                   <div className="text-sm opacity-50 text-center mt-8">
                       <h1>echo-ing...</h1>
                       <p>Words that resonate in my heart.</p>
-                      <p>Diese Worte hallen wider in meinem Herzen</p>
-                      <p>Etwas, das nachhallt in meinem Kopf</p>
                       <p>What resonates with me, reverberation</p>
-                      <p>Alltagssplitter, Fragment</p>
-                      <p>What is echoing in my head</p>
+                      <p>Words echoing in my head</p>
                   </div>
               </div>
           </>

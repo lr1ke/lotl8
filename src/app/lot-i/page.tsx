@@ -11,17 +11,17 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import Image from 'next/image';
 import { any } from 'prop-types';
 import { ConnectWallet } from "@/components/ui/ConnectWallet";
-import { faQuestionCircle, faHome } from '@fortawesome/free-solid-svg-icons';
+import { faQuestionCircle, faLink } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 
 interface NftAsset {
   name: string;
   owner: string;
-  href: string;
   nftPic: string | null;
   datum: string | null;
   basisPoints: number | null; // Either a number for royalties or null if no royalties
+  assetPk: string
 }
 
 
@@ -66,6 +66,7 @@ const Loti = () => {
             const datumAttr = asset.attributes?.attributeList?.find(attr => attr.key === 'datum');
             const datum = datumAttr ? datumAttr.value : null;
             const basisPoints = asset.royalties?.basisPoints ?? null;
+            const assetPk = asset.publicKey;
 
             return {
                 name: asset.name,
@@ -74,6 +75,7 @@ const Loti = () => {
                 nftPic,
                 datum,
                 basisPoints,
+                assetPk,
             };
         });
         // Update the state with the fetched assets
@@ -89,15 +91,15 @@ const Loti = () => {
         setSelectedImage(null);
     };
 
-          // Handle the click on the "Detail" button
-          const handleShowDetails = (nft: NftAsset) => {
-            setSelectedNft(nft);  // Set the selected NFT
-        };
+        //   // Handle the click on the "Detail" button
+        //   const handleShowDetails = (nft: NftAsset) => {
+        //     setSelectedNft(nft);  // Set the selected NFT
+        // };
     
-        // Close details
-        const handleCloseDetails = () => {
-            setSelectedNft(null);  // Reset selected NFT to hide the details
-        };
+        // // Close details
+        // const handleCloseDetails = () => {
+        //     setSelectedNft(null);  // Reset selected NFT to hide the details
+        // };
 
     return (
         <>
@@ -106,21 +108,23 @@ const Loti = () => {
                     <div className="max-w-3xl mx-auto bg-white p-6 rounded-lg shadow-md">
                         <h1 className="text-2xl font-semibold mb-8 text-center">Lot-i</h1>
                         <h2 className="text-xl font-semibold mb-8 text-center opacity-50">Archive of self</h2>
-                        <div className="p-4">
                         <ConnectWallet />
+
+                        <div className="p-4">
 
                             <div className="flex flex-col space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0">
                                 <button
                                     onClick={handlefetchOwnerClick}
-                                    className="w-full sm:w-auto bg-gradient-to-r from-pink-300 to-yellow-200 hover:from-green-300 hover:to-blue-300 text-blue-800 p-2 transition-all duration-200 border-2 border-transparent hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                                    className='flex-1 bg-gradient-to-r from-pink-300 to-yellow-200 hover:from-green-300 hover:to-blue-300 text-blue-800 p-2 transition-all duration-200 border-2 border-transparent hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed'
                                     disabled={!wallet || !wallet.publicKey}
                                 >
                                     All my NFTs
+                            
                                 </button>
     
                                 <button
                                     onClick={handlefetchOwnerClick}
-                                    className="w-full sm:w-auto bg-gradient-to-r from-pink-300 to-yellow-200 hover:from-green-300 hover:to-blue-300 text-blue-800 p-2 transition-all duration-200 border-2 border-transparent hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                                    className='flex-1 bg-gradient-to-r from-pink-300 to-yellow-200 hover:from-green-300 hover:to-blue-300 text-blue-800 p-2 transition-all duration-200 border-2 border-transparent hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed'
                                     disabled={!wallet || !wallet.publicKey}
                                 >
                                     My Soulbound NFTs
@@ -128,7 +132,7 @@ const Loti = () => {
     
                                 <button
                                     onClick={handlefetchOwnerClick}
-                                    className="w-full sm:w-auto bg-gradient-to-r from-pink-300 to-yellow-200 hover:from-green-300 hover:to-blue-300 text-blue-800 p-2 transition-all duration-200 border-2 border-transparent hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                                    className='flex-1 bg-gradient-to-r from-pink-300 to-yellow-200 hover:from-green-300 hover:to-blue-300 text-blue-800 p-2 transition-all duration-200 border-2 border-transparent hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed'
                                     disabled={!wallet || !wallet.publicKey}
                                 >
                                     My Tradeable NFTs
@@ -138,7 +142,7 @@ const Loti = () => {
                             <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4">
                                 {nftAssets.length > 0 ? (
                                     nftAssets.map((nft, index) => (
-                                        <div key={nft.href} className="bg-white-100 rounded-lg p-4 shadow">
+                                        <div key={nft.assetPk} className="bg-white-100 rounded-lg p-4 shadow">
                                             <h2 className="text-md opacity-50 mb-2">{nft.datum}</h2>
 
                                             {nft.nftPic ? (
@@ -153,19 +157,20 @@ const Loti = () => {
                                             ) : (
                                                 <p>No image available</p>
                                             )}
-
-<div className="mt-2 flex items-start space-x-1">
-
+                                    <div className="mt-2 flex items-start space-x-1">
+                                    <button
+                            onClick={() => window.open(`https://xray.helius.xyz/token/${nft.assetPk}?network=devnet`, '_blank')}
+                            className="bg-white text-gray-600 p-1 text-xs rounded border border-gray-300 hover:bg-gray-100 transition opacity-50"
+                          >
+                            <FontAwesomeIcon icon={faQuestionCircle} className="h-4 w-4 text-gray-500" />
+                          </button>
                             <button
-                                onClick={() => handleShowDetails(nft)}
-                              className="bg-white text-gray-600 p-1 text-xs rounded border border-gray-300 hover:bg-gray-100 transition opacitiy-50"
-                            >
-                              <FontAwesomeIcon icon={faQuestionCircle} className="h-4 w-4 text-gray-500" />
-                            </button>
-
-                          </div>
-
-
+                            onClick={() => window.open(`https://magiceden.io/item-details/${nft.assetPk}`, '_blank')}
+                            className="bg-white text-gray-600 p-1 text-xs rounded border border-gray-300 hover:bg-gray-100 transition opacity-50"
+                          >
+                            <FontAwesomeIcon icon={faLink} className="h-4 w-4 text-gray-500" />
+                          </button>
+                                    </div>
                                 </div>
                               ))
                             ) : (
@@ -194,39 +199,6 @@ const Loti = () => {
 
                     </div>
                 </div>
-
-                                {/* Show NFT details when an NFT is selected */}
-                                {selectedNft && (
-                    <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50">
-                        <div className="bg-white p-4 rounded-lg shadow-md">
-                            <h2 className="text-xl font-semibold mb-4">NFT Details</h2>
-                            <p><strong>Date:</strong>{selectedNft.name}</p>
-                            <p><strong>Owner:</strong> {selectedNft.owner}</p>
-
-                            <p><strong>Type:</strong> 
-                              {selectedNft.basisPoints !== null 
-                                ? `${selectedNft.basisPoints / 100}% Royalties`  // Divide by 100 to convert to percentage
-                                : 'Soulbound NFT'}
-                            </p>
-                            <p>
-                            <a 
-                              href={selectedNft.href} 
-                              target="_blank" 
-                              rel="noopener noreferrer" 
-                              className="bg-white transition-all border border-gray-300 duration-200  p-2 mt-4 rounded inline-block text-center hover:bg-gray-100"
-                            >
-                              View on Solscan
-                            </a>
-                            </p>
-                            <button
-                              onClick={handleCloseDetails}
-                              className="bg-gradient-to-r from-green-300 to-blue-300 hover:from-pink-300 hover:to-yellow-200 text-blue-800 transition-all duration-200 border-2 border-transparent text-white p-2 mt-4 rounded"
-                            >
-                              Close
-                            </button>
-                        </div>
-                    </div>
-                )}
             </div>
         </>
     );
