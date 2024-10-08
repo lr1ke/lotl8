@@ -38,7 +38,7 @@ const Echoing = () => {
       date: fetchedAsset.name,
       uriMeta: fetchedAsset.uri,      
       owner: fetchedAsset.owner,
-      assetPk: fetchedAsset.publicKey,
+      assetPk: fetchedAsset.publicKey, 
       royalties: fetchedAsset.royalties ? fetchedAsset.royalties.basisPoints : undefined,
       //for soulbound field
       updateAuthority: fetchedAsset.updateAuthority.address,
@@ -197,6 +197,7 @@ const Echoing = () => {
             const metaUri = await uploadMetadata(noteUri, picUri); //upload metadata, include noteUri and picUri
             setMetaUri(metaUri);
             const fetchedAsset = await mintRoyalty(metaUri, picUri, wallet); // Mint the NFT
+            console.log(fetchedAsset);
             processFetchedAsset(fetchedAsset); //process and update the state
           } catch (error) {
           console.error("Error during NFT minting:", error);

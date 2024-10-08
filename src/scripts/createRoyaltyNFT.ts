@@ -50,9 +50,12 @@ import { walletAdapterIdentity } from '@metaplex-foundation/umi-signer-wallet-ad
 
     // Deserialize the Signature from the Transaction
     const signature = base58.deserialize(assetTx.signature)[0];
+    console.log("Signature: \n", signature);
 
     // Fetch the Asset to verify that has been created
     const fetchedAsset = await fetchAsset(umi, asset.publicKey);
+    console.log("Verify that the Asset has been Minted: \n", fetchedAsset);
+    console.log("Asset Created: https://solana.fm/tx/" + base58.deserialize(assetTx.signature)[0] + "?cluster=devnet-alpha");
 
     return fetchedAsset
     };
