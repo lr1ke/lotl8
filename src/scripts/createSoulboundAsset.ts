@@ -23,7 +23,7 @@ export const mintSouldbound = async (metadataUri: any, picUri: any, wallet: any)
 
     // console.log("Collection minted: ", collectionTx.signature);
 
-    const collectionPublicKey =  publicKey("HjB7oVk1Bvog9UVN6sPW6CTWMXMW2qE6cxSZ8GU8pf1w");
+    // const collectionPublicKey =  publicKey("HjB7oVk1Bvog9UVN6sPW6CTWMXMW2qE6cxSZ8GU8pf1w");
 
     let datum = formatDateTime(now());
     const asset = generateSigner(umi);
@@ -33,7 +33,8 @@ export const mintSouldbound = async (metadataUri: any, picUri: any, wallet: any)
         name: datum,
         uri: metadataUri,
         asset: asset,
-        collection: { publicKey: collectionPublicKey },  // Use public key only
+
+        // collection: { publicKey: collectionPublicKey },  // Use public key only
         plugins: [
             {
                 type: 'PermanentFreezeDelegate',
