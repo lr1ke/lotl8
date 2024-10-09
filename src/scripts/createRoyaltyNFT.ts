@@ -11,7 +11,7 @@ import { walletAdapterIdentity } from '@metaplex-foundation/umi-signer-wallet-ad
     umi.use(walletAdapterIdentity(wallet));
     const collectionPublicKey =  publicKey("HjB7oVk1Bvog9UVN6sPW6CTWMXMW2qE6cxSZ8GU8pf1w");
 
-    //set date
+    //set datetime
     let datum = formatDateTime(now());
 
     const asset = generateSigner(umi)
