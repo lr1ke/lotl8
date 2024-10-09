@@ -53,7 +53,7 @@ const Echoing = () => {
   
 
   
-    //Mint Soulbound NFT
+    //Mint Soulbound
     const handleSoulboundClick = async (event: { preventDefault: () => void }) => {
       event.preventDefault();
         
