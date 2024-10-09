@@ -26,7 +26,7 @@ umi.use(signerIdentity(myKeypairSigner)).use(irysUploader());
     const metadata = {
         "name": "Lotl NFT",
         "symbol": "LTL",
-        "description": "Lotl collective diary NFT.",
+        "description": "Lotl NFT.",
         "image": picUri,
         "attributes": [
             {
@@ -49,6 +49,6 @@ umi.use(signerIdentity(myKeypairSigner)).use(irysUploader());
     };
 
     const metadataUri = await umi.uploader.uploadJson(metadata);
-    console.log("Your Uri:", metadataUri);
+    console.log("Your MetadataUri:", metadataUri);
     return metadataUri; 
 }

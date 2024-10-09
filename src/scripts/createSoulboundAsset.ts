@@ -11,6 +11,7 @@ export const mintSouldbound = async (metadataUri: any, picUri: any, wallet: any)
     const umi = createUmi('https://api.devnet.solana.com');
     umi.use(walletAdapterIdentity(wallet));
 
+
     //only needs to run once to mint Lotl collection
     // const collectionSigner = generateSigner(umi);
     // console.log("Collection Address: \n", collectionSigner.publicKey.toString());
@@ -27,6 +28,7 @@ export const mintSouldbound = async (metadataUri: any, picUri: any, wallet: any)
 
     let datum = formatDateTime(now());
     const asset = generateSigner(umi);
+    console.log("Asset Address: \n", asset.publicKey.toString())
 
     // Generate the Soulbound NFT
     const assetTx = await create(umi, {
@@ -51,18 +53,16 @@ export const mintSouldbound = async (metadataUri: any, picUri: any, wallet: any)
         ]
     }).sendAndConfirm(umi);
     console.log("Asset has been created");
-
-         // Deserialize the Signature from the Transaction
-         const signature = base58.deserialize(assetTx.signature)[0];
-         console.log("Signature: \n", signature);
-     
-         // Fetch the Asset to verify that has been created
-         const fetchedAsset = await fetchAsset(umi, asset.publicKey);
-         console.log("Verify that the Asset has been Minted: \n", fetchedAsset);
-         console.log("Asset Created: https://solana.fm/tx/" + base58.deserialize(assetTx.signature)[0] + "?cluster=devnet-alpha");
-     
-         return fetchedAsset
-     }
- 
+    
+    // Deserialize the Signature from the Transaction
+    const signature = base58.deserialize(assetTx.signature)[0];
+    console.log("Signature: \n", signature);
+    // console.log("Asset Created: https://solana.fm/tx/" + base58.deserialize(signature)[0] + "?cluster=devnet-alpha");
 
 
+    // Fetch the Asset to verify that has been created
+    const fetchedAsset = await fetchAsset(umi, asset.publicKey);
+    // console.log("Verify that the Asset has been Minted: \n", fetchedAsset);
+    // console.log("Asset Created: https://solana.fm/tx/" + base58.deserialize(assetTx.signature)[0] + "?cluster=devnet-alpha");
+
+    return { fetchedAsset, signature };    };

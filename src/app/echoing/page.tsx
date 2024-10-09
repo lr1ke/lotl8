@@ -10,6 +10,9 @@ import { mintSouldbound } from '@/scripts/createSoulboundAsset';
 import { mintRoyalty } from '@/scripts/createRoyaltyNFT';
 import html2canvas from "html2canvas";
 import { uploadImage } from "@/scripts/uploadImage";
+import { base58 } from '@metaplex-foundation/umi/serializers';
+
+
 
 interface Asset {
   date: string;
@@ -120,9 +123,12 @@ const Echoing = () => {
         const [noteUri] = await uploadText(content); // Upload text content
         const metaUri = await uploadMetadata(noteUri, picUri); // Include note, image URI in metadata, upload
         setMetaUri(metaUri);
-        const fetchedAsset = await mintSouldbound(metaUri, picUri, wallet); // Mint the NFT
+        const result = await mintSouldbound(metaUri, picUri, wallet); // Mint the NFT
+        const { fetchedAsset, signature } = result;
+        console.log(signature);
+        console.log(fetchedAsset);
         processFetchedAsset(fetchedAsset); //process and update the state
-      } catch (error) {
+  } catch (error) {
         console.error("Error during NFT minting:", error);
       }
     };
@@ -196,7 +202,9 @@ const Echoing = () => {
             const [noteUri] = await uploadText(content); //destrukturiere array text and geb erstes element []
             const metaUri = await uploadMetadata(noteUri, picUri); //upload metadata, include noteUri and picUri
             setMetaUri(metaUri);
-            const fetchedAsset = await mintRoyalty(metaUri, picUri, wallet); // Mint the NFT
+            const result = await mintRoyalty(metaUri, picUri, wallet); // Mint the NFT
+            const { fetchedAsset, signature } = result;
+            console.log(signature);
             console.log(fetchedAsset);
             processFetchedAsset(fetchedAsset); //process and update the state
           } catch (error) {
@@ -269,24 +277,30 @@ const Echoing = () => {
 
                   </div>
 
-                  <div className="asset-info">
-                  {assetData ? (
-                    <div>
-                            <h3 className="text-2xl mb-6 text-center opacity-50">Successfully minted!</h3>
+                  <div>
+      {/* Other components and logic */}
+      {assetData && (
+        <div className="asset-details">
+          <h2>Asset minted successfully!</h2>
+          <p><strong>URI Meta:</strong> <a href={assetData.uriMeta} target="_blank" rel="noopener noreferrer">{assetData.uriMeta}</a></p>
+          <p><strong>Owner:</strong> {assetData.owner}</p>
+          <p><strong>Asset Public Key:</strong> {assetData.assetPk}</p>
+          <p><strong>Royalties:</strong> {assetData.royalties ? `${assetData.royalties} basis points` : 'N/A'}</p>
+          <p><strong>Update Authority:</strong> {assetData.updateAuthority}</p>
+          <ul>
+            {assetData.attributes.map((attr, index) => (
+              <li key={index}><strong>{attr.key}:</strong> {attr.value}</li>
+            ))}
+          </ul>
+          <button
+                            onClick={() => window.open(`https://xray.helius.xyz/token/${assetData.assetPk}?network=devnet`, '_blank')}
+                            className="bg-white text-gray-600 p-1  rounded border border-gray-300 hover:bg-gray-100 transition opacity-50"
+                          > Link to solana explorer
+                          </button>
 
-                                <a 
-                                  href={`https://xray.helius.xyz/token/${assetData.assetPk}?network=devnet`}
-                                  target="_blank" 
-                                  rel="noopener noreferrer" 
-                                  className="bg-gradient-to-r from-green-300 to-blue-300 hover:from-pink-300 hover:to-yellow-200 text-blue-800 transition-all duration-200 border-2 border-transparent text-white p-2 mt-4 rounded"
-                                  >
-                                  View on helius
-                                </a>
-                                </div>
-) : (
-  <p className="text-center text-gray-500">Words, Works, Worlds</p>
-)}
-                </div>
+        </div>
+      )}
+    </div>
                   <div className="text-sm opacity-50 text-center mt-8">
                       <h1>echo-ing...</h1>
                       <p>Words that resonate in my heart.</p>

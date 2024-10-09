@@ -1,129 +1,133 @@
 'use client'
 
-import * as React from 'react';
-import { useEffect, useState, useRef } from "react";
-import { createUmi } from '@metaplex-foundation/umi-bundle-defaults';
-import { walletAdapterIdentity } from '@metaplex-foundation/umi-signer-wallet-adapters';
-import { fetchAssetsByOwner } from '@metaplex-foundation/mpl-core';
-import { useWallet } from '@solana/wallet-adapter-react';
-import { any } from 'prop-types';
-import { fetchCollection, fetchAssetsByCollection } from '@metaplex-foundation/mpl-core'
-import { publicKey as umiPublicKey} from '@metaplex-foundation/umi';
-import { ConnectWallet } from "@/components/ui/ConnectWallet";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faQuestionCircle, faHome, faLink } from '@fortawesome/free-solid-svg-icons';
+// import * as React from 'react';
+// import { useEffect, useState, useRef } from "react";
+// import { createUmi } from '@metaplex-foundation/umi-bundle-defaults';
+// import { walletAdapterIdentity } from '@metaplex-foundation/umi-signer-wallet-adapters';
+// import { fetchAssetsByOwner } from '@metaplex-foundation/mpl-core';
+// import { useWallet } from '@solana/wallet-adapter-react';
+// import { any } from 'prop-types';
+// import { fetchCollection, fetchAssetsByCollection } from '@metaplex-foundation/mpl-core'
+// import { publicKey as umiPublicKey} from '@metaplex-foundation/umi';
+// import { ConnectWallet } from "@/components/ui/ConnectWallet";
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+// import { faQuestionCircle, faHome, faLink } from '@fortawesome/free-solid-svg-icons';
 
 
 
-interface Collection {
-  currentSize: number;
-  key: number;
-  name: string;
-  numMinted: number;
-  publicKey: string;
-  updateAuthority: string;
-  uri: string;
-}
+// interface Collection {
+//   currentSize: number;
+//   key: number;
+//   name: string;
+//   numMinted: number;
+//   publicKey: string;
+//   updateAuthority: string;
+//   uri: string;
+// }
 
-interface NftAsset {
-  name: string;
-  owner: string;
-  nftPic: string | null;
-  datum: string | null;
-  basisPoints: number | null; // Either a number for royalties or null if no royalties
-  assetPk: string
-}
+// interface NftAsset {
+//   name: string;
+//   owner: string;
+//   nftPic: string | null;
+//   datum: string | null;
+//   basisPoints: number | null; // Either a number for royalties or null if no royalties
+//   assetPk: string
+// }
 
 
 
 const Loty = () => {
-    const [selectedImage, setSelectedImage] = useState<string | null>(null); //für zoom    // const [owner, setOwner] = React.useState<string>("");
-    const [nftAssets, setNftAssets] = useState<NftAsset[]>([]);
-    const [collectionAll, setCollectionAll] = useState<Collection | null>(null);
-    const [selectedNft, setSelectedNft] = useState<NftAsset | null>(null);  // To track the selected NFT
+//     const [selectedImage, setSelectedImage] = useState<string | null>(null); //für zoom    // const [owner, setOwner] = React.useState<string>("");
+//     const [nftAssets, setNftAssets] = useState<NftAsset[]>([]);
+//     const [collectionAll, setCollectionAll] = useState<Collection | null>(null);
+//     const [selectedNft, setSelectedNft] = useState<NftAsset | null>(null);  // To track the selected NFT
 
 
-    const wallet = useWallet();
-    const umi = createUmi('https://api.devnet.solana.com');
-    umi.use(walletAdapterIdentity(wallet));
+//     const wallet = useWallet();
+//     const umi = createUmi('https://api.devnet.solana.com');
+//     umi.use(walletAdapterIdentity(wallet));
 
-    // Fetch collection props as number minted when the page loads
-    useEffect(() => {
-      const fetchCollectionData = async () => {
-          const collectionId = umiPublicKey("HjB7oVk1Bvog9UVN6sPW6CTWMXMW2qE6cxSZ8GU8pf1w");
-          try {
-              const collection = await fetchCollection(umi, collectionId);
-              setCollectionAll(collection);
-          } catch (error) {
-              console.error('Error fetching collection:', error);
-          }
-      };     
-      // Only fetch if the wallet is connected
-      if (wallet && wallet.publicKey && !collectionAll) {
-          fetchCollectionData();
-      }
-  }, [wallet, umi, collectionAll]);
-
-
-      // Handle the click on the "Detail" button
-      const handleShowDetails = (nft: NftAsset) => {
-        setSelectedNft(nft);  // Set the selected NFT
-    };
+//     // Fetch collection props as number minted when the page loads
+//     useEffect(() => {
+//       const fetchCollectionData = async () => {
+//           const collectionId = umiPublicKey("HjB7oVk1Bvog9UVN6sPW6CTWMXMW2qE6cxSZ8GU8pf1w");
+//           try {
+//               const collection = await fetchCollection(umi, collectionId);
+//               setCollectionAll(collection);
+//           } catch (error) {
+//               console.error('Error fetching collection:', error);
+//           }
+//       };     
+//       // Only fetch if the wallet is connected
+//       if (wallet && wallet.publicKey && !collectionAll) {
+//           fetchCollectionData();
+//       }
+//   }, [wallet, umi, collectionAll]);
 
 
-  const handleFetchAllClick = async () => {
-    // Ensure wallet is connected
-    if (!wallet || !wallet.publicKey) {
-        console.error('Wallet not connected or public key unavailable');
-        return;
-    }
-
-    // Collection ID (replace with your actual collection public key)
-    const collectionId = umiPublicKey("HjB7oVk1Bvog9UVN6sPW6CTWMXMW2qE6cxSZ8GU8pf1w");
-
-    try {
-        // Fetch all assets from the collection
-        const assetsInCollection = await fetchAssetsByCollection(umi, collectionId, {
-            skipDerivePlugins: false,
-        });
-
-        // Map through the fetched assets and extract necessary information
-        const fetchedAssets = assetsInCollection.map(asset => {
-            const imageAttr = asset.attributes?.attributeList?.find(attr => attr.key === 'image');
-            const nftPic = imageAttr ? imageAttr.value : null;
-            const datumAttr = asset.attributes?.attributeList?.find(attr => attr.key === 'datum');
-            const datum = datumAttr ? datumAttr.value : null;
-            const basisPoints = asset.royalties?.basisPoints ?? null;
-            const assetPk = asset.publicKey;
+//       // Handle the click on the "Detail" button
+//       const handleShowDetails = (nft: NftAsset) => {
+//         setSelectedNft(nft);  // Set the selected NFT
+//     };
 
 
-            return {
-                name: asset.name,
-                owner: asset.owner,
-                nftPic,
-                datum,
-                basisPoints,
-                assetPk
-            };
-        });
+//   const handleFetchAllClick = async () => {
+//     // Ensure wallet is connected
+//     if (!wallet || !wallet.publicKey) {
+//         console.error('Wallet not connected or public key unavailable');
+//         return;
+//     }
 
-        // Update the state with the fetched assets
-        setNftAssets(fetchedAssets);
-        console.log('Fetched assets:', fetchedAssets);
-    } catch (error) {
-        console.error('Error fetching assets from collection:', error);
-    }
-};
+//     // Collection ID (replace with your actual collection public key)
+//     const collectionId = umiPublicKey("HjB7oVk1Bvog9UVN6sPW6CTWMXMW2qE6cxSZ8GU8pf1w");
+
+//     try {
+//         // Fetch all assets from the collection
+//         const assetsInCollection = await fetchAssetsByCollection(umi, collectionId, {
+//             skipDerivePlugins: false,
+//         });
+
+//         // Map through the fetched assets and extract necessary information
+//         const fetchedAssets = assetsInCollection.map(asset => {
+//             const imageAttr = asset.attributes?.attributeList?.find(attr => attr.key === 'image');
+//             const nftPic = imageAttr ? imageAttr.value : null;
+//             const datumAttr = asset.attributes?.attributeList?.find(attr => attr.key === 'datum');
+//             const datum = datumAttr ? datumAttr.value : null;
+//             const basisPoints = asset.royalties?.basisPoints ?? null;
+//             const assetPk = asset.publicKey;
 
 
-    // for image zoom out
-    const closeModal = () => {
-        setSelectedImage(null);
-    };
+//             return {
+//                 name: asset.name,
+//                 owner: asset.owner,
+//                 nftPic,
+//                 datum,
+//                 basisPoints,
+//                 assetPk
+//             };
+//         });
+
+//         // Update the state with the fetched assets
+//         setNftAssets(fetchedAssets);
+//         console.log('Fetched assets:', fetchedAssets);
+//     } catch (error) {
+//         console.error('Error fetching assets from collection:', error);
+//     }
+// };
+
+
+//     // for image zoom out
+//     const closeModal = () => {
+//         setSelectedImage(null);
+//     };
 
     return (
         <>
-            <div className="flex flex-col min-h-screen bg-gray-100 font-sans antialised">
+                                <h1 className="text-2xl font-semibold mb-4 opacity-50 text-center">Lot-y</h1>
+                        <h2 className="text-xl font-semibold mb-4 text-center opacity-80"> Sanctuary for All</h2>
+
+        <p>Coming soon</p>
+            {/* <div className="flex flex-col min-h-screen bg-gray-100 font-sans antialised">
                 <div className="container mx-auto mt-10 px-4 sm:px-0">
                     <div className="max-w-3xl mx-auto bg-white p-6 rounded-lg shadow-md">
                         <h1 className="text-2xl font-semibold mb-4 opacity-50 text-center">Lot-y</h1>
@@ -227,7 +231,7 @@ const Loty = () => {
                     </div>
                 </div>
 
-            </div>
+            </div> */}
         </>
     );
 };
