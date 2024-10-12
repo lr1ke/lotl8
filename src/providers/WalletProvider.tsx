@@ -5,7 +5,7 @@ import {
   ConnectionProvider,
   WalletProvider,
 } from "@solana/wallet-adapter-react";
-// import { PhantomWalletAdapter } from "@solana/wallet-adapter-wallets";
+import { PhantomWalletAdapter } from "@solana/wallet-adapter-wallets";
 import { SolflareWalletAdapter } from '@solana/wallet-adapter-solflare';
 
 import { WalletModalProvider } from "@solana/wallet-adapter-react-ui";
@@ -22,7 +22,7 @@ export const WalletConnectionProvider: React.FC<WalletConnectionProviderProps> =
   const network = WalletAdapterNetwork.Devnet;
   const endpoint = useMemo(() => clusterApiUrl(network), [network]);
 
-  const wallets = useMemo(() => [ new SolflareWalletAdapter()], []);
+  const wallets = useMemo(() => [ new SolflareWalletAdapter(), new PhantomWalletAdapter ], []);
 
   return (
     <ConnectionProvider endpoint={endpoint}>
