@@ -1,7 +1,7 @@
 
 import { generateSigner, publicKey, now, dateTime, formatDateTime } from '@metaplex-foundation/umi'
 import { base58 } from '@metaplex-foundation/umi/serializers';
-import { create, ruleSet, fetchAsset} from '@metaplex-foundation/mpl-core'
+import { create, ruleSet, fetchCollection, fetchAsset} from '@metaplex-foundation/mpl-core'
 import { createUmi } from '@metaplex-foundation/umi-bundle-defaults';
 import { walletAdapterIdentity } from '@metaplex-foundation/umi-signer-wallet-adapters';
 
@@ -11,8 +11,12 @@ import { walletAdapterIdentity } from '@metaplex-foundation/umi-signer-wallet-ad
     umi.use(walletAdapterIdentity(wallet));
     const collectionPublicKey =  publicKey("HjB7oVk1Bvog9UVN6sPW6CTWMXMW2qE6cxSZ8GU8pf1w");
 
+        const collection = await fetchCollection(umi, collectionPublicKey);
+
     //set datetime
     let datum = formatDateTime(now());
+
+
 
     const asset = generateSigner(umi)
 
@@ -21,6 +25,7 @@ import { walletAdapterIdentity } from '@metaplex-foundation/umi-signer-wallet-ad
         name: datum,
         uri: metadataUri,
         asset: asset,
+        collection: collection,
     
         plugins: [
             {
