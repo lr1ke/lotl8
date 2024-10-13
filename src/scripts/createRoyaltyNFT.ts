@@ -1,7 +1,7 @@
 
 import { generateSigner, publicKey, now, dateTime, formatDateTime } from '@metaplex-foundation/umi'
 import { base58 } from '@metaplex-foundation/umi/serializers';
-import { create, ruleSet, fetchCollection, fetchAsset} from '@metaplex-foundation/mpl-core'
+import { create, ruleSet, fetchCollection, fetchAsset, createCollection} from '@metaplex-foundation/mpl-core'
 import { createUmi } from '@metaplex-foundation/umi-bundle-defaults';
 import { walletAdapterIdentity } from '@metaplex-foundation/umi-signer-wallet-adapters';
 
@@ -9,14 +9,27 @@ import { walletAdapterIdentity } from '@metaplex-foundation/umi-signer-wallet-ad
 
     const umi = createUmi('https://api.devnet.solana.com')
     umi.use(walletAdapterIdentity(wallet));
-    const collectionPublicKey =  publicKey("HjB7oVk1Bvog9UVN6sPW6CTWMXMW2qE6cxSZ8GU8pf1w");
 
-        const collection = await fetchCollection(umi, collectionPublicKey);
+    const LotlCollectionPublicKey =  publicKey("HjB7oVk1Bvog9UVN6sPW6CTWMXMW2qE6cxSZ8GU8pf1w");
+
+
+
+    // Generate Collection
+    const collection = generateSigner(umi);
+    console.log("Collection address:", collection.publicKey.toString());
+
+    const collectionTx = await createCollection(umi, {
+        collection: collection,
+        name: "Lotl Royality Collection",
+        uri: "https://example.com/my-collection.json",
+    }).sendAndConfirm(umi);
+
+    let signatureColl = base58.deserialize(collectionTx.signature)[0];
+    console.log("Collection Created: https://solana.fm/tx/" + signatureColl + "?cluster=devnet-alpha");
+
 
     //set datetime
     let datum = formatDateTime(now());
-
-
 
     const asset = generateSigner(umi)
 
@@ -37,7 +50,7 @@ import { walletAdapterIdentity } from '@metaplex-foundation/umi-signer-wallet-ad
                             percentage: 80,
                         },
                         {
-                            address: collectionPublicKey,
+                            address: LotlCollectionPublicKey,
                             percentage: 20,
                         }
                     ],
