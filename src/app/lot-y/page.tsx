@@ -53,6 +53,25 @@ const Loty = () => {
   
  const owner = publicKey("45UxpqwZFdNuvzbrde7yhTp4ZhJBjkH82y577B5ZB3A6");
 
+useEffect(() => {
+  const fetchCollectionData = async () => {
+    try {
+      const assets = await das.searchAssets(umi, {
+        creator: publicKey("HjB7oVk1Bvog9UVN6sPW6CTWMXMW2qE6cxSZ8GU8pf1w") // Ensure this public key is valid
+      });
+      console.log(assets);
+    } catch (error) {
+      console.error("Error fetching collection:", error);
+    }
+  };
+
+  // Only fetch if the wallet is connected
+  if (wallet && wallet.publicKey) {
+    fetchCollectionData();
+  }
+}, [wallet, umi]);
+
+
 
 //  const asset = await das.searchAssets(umi, {
   // creator: publicKey("45UxpqwZFdNuvzbrde7yhTp4ZhJBjkH82y577B5ZB3A6"),
@@ -93,25 +112,6 @@ const Loty = () => {
 
 
 // });
-
-// Fetch collection props as number minted when the page loads
-useEffect(() => {
-  const fetchCollectionData = async () => {
-    try {
-      const assets = await das.searchAssets(umi, {
-        creator: publicKey("HjB7oVk1Bvog9UVN6sPW6CTWMXMW2qE6cxSZ8GU8pf1w") // Ensure this public key is valid
-      });
-      console.log(assets);
-    } catch (error) {
-      console.error("Error fetching collection:", error);
-    }
-  };
-
-  // Only fetch if the wallet is connected
-  if (wallet && wallet.publicKey) {
-    fetchCollectionData();
-  }
-}, [wallet, umi]);
 
 
 
