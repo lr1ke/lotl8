@@ -15,17 +15,17 @@ import { walletAdapterIdentity } from '@metaplex-foundation/umi-signer-wallet-ad
 
 
     // Generate Collection
-    const collection = generateSigner(umi);
-    console.log("Collection address:", collection.publicKey.toString());
+    // const collection = generateSigner(umi);
+    // console.log("Collection address:", collection.publicKey.toString());
 
-    const collectionTx = await createCollection(umi, {
-        collection: collection,
-        name: "Lotl Royality Collection",
-        uri: "https://example.com/my-collection.json",
-    }).sendAndConfirm(umi);
+    // const collectionTx = await createCollection(umi, {
+    //     collection: collection,
+    //     name: "Lotl Royality Collection",
+    //     uri: "https://example.com/my-collection.json",
+    // }).sendAndConfirm(umi);
 
-    let signatureColl = base58.deserialize(collectionTx.signature)[0];
-    console.log("Collection Created: https://solana.fm/tx/" + signatureColl + "?cluster=devnet-alpha");
+    // let signatureColl = base58.deserialize(collectionTx.signature)[0];
+    // console.log("Collection Created: https://solana.fm/tx/" + signatureColl + "?cluster=devnet-alpha");
 
 
     //set datetime
@@ -38,7 +38,7 @@ import { walletAdapterIdentity } from '@metaplex-foundation/umi-signer-wallet-ad
         name: datum,
         uri: metadataUri,
         asset: asset,
-        collection: collection,
+        // collection: collection,
     
         plugins: [
             {

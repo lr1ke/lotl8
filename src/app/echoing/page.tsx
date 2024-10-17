@@ -28,11 +28,12 @@ interface Asset {
 
 const Echoing = () => { 
   const [assetData, setAssetData] = useState<Asset | null>(null);
-
   const [content, setContent] = React.useState<string>("");
   const [charCount, setCharCount] = React.useState<number>(0);
   const [metaUri, setMetaUri] = React.useState<string>("");
   const contentRef = useRef<HTMLDivElement | null>(null);
+  const [loading, setLoading] = useState<boolean>(false); // Loading state
+
 
   const wallet = useWallet();
 
@@ -59,6 +60,9 @@ const Echoing = () => {
     //Mint Soulbound
     const handleSoulboundClick = async (event: { preventDefault: () => void }) => {
       event.preventDefault();
+      setLoading(true);
+
+
         
       let picUri = "";
     
@@ -128,8 +132,13 @@ const Echoing = () => {
         console.log(signature);
         console.log(fetchedAsset);
         processFetchedAsset(fetchedAsset); //process and update the state
+
+        setContent(""); //Clear input after successful minting
+        setCharCount(0); // Reset character count
   } catch (error) {
         console.error("Error during NFT minting:", error);
+      } finally {
+        setLoading(false);
       }
     };
     
@@ -247,9 +256,9 @@ const Echoing = () => {
                                           }}
                                           className="mb-4 border-blue-400 rounded-md h-80 w-full p-2"
                                           placeholder="This resonates with my heart, echos in my head..."
-                                          maxLength={250}
+                                          maxLength={500}
                                       ></textarea>
-                                      <p>{charCount}/250</p>
+                                      <p>{charCount}/500</p>
                                   </div>
                               </form>
       
@@ -272,12 +281,15 @@ const Echoing = () => {
                                   <ConnectWallet />
 
                               </div>
+
                           </div>
                       </div>                  
 
                   </div>
 
                   <div>
+                  {loading && <p>Please wait. Your NFT is being minted...</p>} {/* Loading message */}
+
       {/* Other components and logic */}
       {assetData && (
         <div className="asset-details">

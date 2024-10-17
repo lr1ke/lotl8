@@ -1,51 +1,119 @@
 'use client'
 
-// import * as React from 'react';
-// import { useEffect, useState, useRef } from "react";
-// import { createUmi } from '@metaplex-foundation/umi-bundle-defaults';
-// import { walletAdapterIdentity } from '@metaplex-foundation/umi-signer-wallet-adapters';
-// import { fetchAssetsByOwner } from '@metaplex-foundation/mpl-core';
-// import { useWallet } from '@solana/wallet-adapter-react';
-// import { any } from 'prop-types';
-// import { fetchCollection, fetchAssetsByCollection } from '@metaplex-foundation/mpl-core'
-// import { publicKey as umiPublicKey} from '@metaplex-foundation/umi';
-// import { ConnectWallet } from "@/components/ui/ConnectWallet";
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-// import { faQuestionCircle, faHome, faLink } from '@fortawesome/free-solid-svg-icons';
+import * as React from 'react';
+import { useEffect, useState, useRef } from "react";
+import { createUmi } from '@metaplex-foundation/umi-bundle-defaults';
+import { walletAdapterIdentity } from '@metaplex-foundation/umi-signer-wallet-adapters';
+import { fetchAssetsByOwner } from '@metaplex-foundation/mpl-core';
+import { useWallet } from '@solana/wallet-adapter-react';
+import { any } from 'prop-types';
+import { fetchCollection, fetchAssetsByCollection } from '@metaplex-foundation/mpl-core'
+import { publicKey } from '@metaplex-foundation/umi';
+import { ConnectWallet } from "@/components/ui/ConnectWallet";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faQuestionCircle, faHome, faLink } from '@fortawesome/free-solid-svg-icons';
+import { das }  from '@metaplex-foundation/mpl-core-das';
+import { dasApi } from '@metaplex-foundation/digital-asset-standard-api';
 
 
 
-// interface Collection {
-//   currentSize: number;
-//   key: number;
-//   name: string;
-//   numMinted: number;
-//   publicKey: string;
-//   updateAuthority: string;
-//   uri: string;
-// }
 
-// interface NftAsset {
-//   name: string;
-//   owner: string;
-//   nftPic: string | null;
-//   datum: string | null;
-//   basisPoints: number | null; // Either a number for royalties or null if no royalties
-//   assetPk: string
-// }
+interface Collection {
+  currentSize: number;
+  key: number;
+  name: string;
+  numMinted: number;
+  publicKey: string;
+  updateAuthority: string;
+  uri: string;
+}
+
+interface NftAsset {
+  name: string;
+  owner: string;
+  nftPic: string | null;
+  datum: string | null;
+  basisPoints: number | null; // Either a number for royalties or null if no royalties
+  assetPk: string
+}
 
 
 
 const Loty = () => {
-//     const [selectedImage, setSelectedImage] = useState<string | null>(null); //für zoom    // const [owner, setOwner] = React.useState<string>("");
-//     const [nftAssets, setNftAssets] = useState<NftAsset[]>([]);
-//     const [collectionAll, setCollectionAll] = useState<Collection | null>(null);
-//     const [selectedNft, setSelectedNft] = useState<NftAsset | null>(null);  // To track the selected NFT
 
 
-//     const wallet = useWallet();
-//     const umi = createUmi('https://api.devnet.solana.com');
-//     umi.use(walletAdapterIdentity(wallet));
+    const wallet = useWallet();
+    // const umi = createUmi('https://api.devnet.solana.com');
+    // umi.use(walletAdapterIdentity(wallet));
+
+    const umi = createUmi('https://api.devnet.solana.com')
+  .use(walletAdapterIdentity(wallet))
+  .use(dasApi());
+
+  
+ const owner = publicKey("45UxpqwZFdNuvzbrde7yhTp4ZhJBjkH82y577B5ZB3A6");
+
+
+//  const asset = await das.searchAssets(umi, {
+  // creator: publicKey("45UxpqwZFdNuvzbrde7yhTp4ZhJBjkH82y577B5ZB3A6"),
+  // limit: 10,
+  // showDeleted: false,
+  // showPrivate: false,
+  // showUnverified: false,
+  // showPending: false,
+  // showRejected: false,
+  // showExtended: false,
+  // showData: false,
+  // showFiles: false,
+  // showMetadata: false,
+  // showTags: false,
+  // showRoyalties: false,
+  // showAttributes: false,
+  // showPreviews: false,
+  // showPreviewsData: false,
+  // showPreviewsFiles: false,
+  // showPreviewsMetadata: false,  
+  // showPreviewsTags: false,
+  // showPreviewsRoyalties: false,
+  // showPreviewsAttributes: false,
+  // showPreviewsExtended: false,
+  // showPreviewsDataExtended: false,
+  // showPreviewsFilesExtended: false,
+  // showPreviewsMetadataExtended: false,
+  // showPreviewsTagsExtended: false,
+  // showPreviewsRoyaltiesExtended: false,
+  // showPreviewsAttributesExtended: false,
+  // showPreviewsExtendedExtended: false,
+  // showPreviewsDataExtendedExtended: false,
+  // showPreviewsFilesExtendedExtended: false,
+  // showPreviewsMetadataExtendedExtended: false,  
+  // showPreviewsTagsExtendedExtended: false,
+  // showPreviewsRoyaltiesExtendedExtended: false,
+  // showPreviewsAttributesExtendedExtended: false,
+
+
+// });
+
+// Fetch collection props as number minted when the page loads
+useEffect(() => {
+  const fetchCollectionData = async () => {
+    try {
+      const assets = await das.searchAssets(umi, {
+        creator: publicKey("HjB7oVk1Bvog9UVN6sPW6CTWMXMW2qE6cxSZ8GU8pf1w") // Ensure this public key is valid
+      });
+      console.log(assets);
+    } catch (error) {
+      console.error("Error fetching collection:", error);
+    }
+  };
+
+  // Only fetch if the wallet is connected
+  if (wallet && wallet.publicKey) {
+    fetchCollectionData();
+  }
+}, [wallet, umi]);
+
+
 
 //     // Fetch collection props as number minted when the page loads
 //     useEffect(() => {
