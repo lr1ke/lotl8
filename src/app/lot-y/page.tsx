@@ -18,15 +18,6 @@ import { dasApi } from '@metaplex-foundation/digital-asset-standard-api';
 
 
 
-interface Collection {
-  currentSize: number;
-  key: number;
-  name: string;
-  numMinted: number;
-  publicKey: string;
-  updateAuthority: string;
-  uri: string;
-}
 
 interface NftAsset {
   name: string;
@@ -40,6 +31,11 @@ interface NftAsset {
 
 
 const Loty = () => {
+    // const [collectionAll, setCollectionAll] = useState<Collection | null>(null);
+    // const [nftAssets, setNftAssets] = useState<NftAsset[]>([]);
+    // const [selectedImage, setSelectedImage] = useState<string | null>(null);
+    // const [selectedNft, setSelectedNft] = useState<NftAsset
+    const [tradeableAll, setTradeableAll] = useState<any[]>([]);
 
 
     const wallet = useWallet();
@@ -51,66 +47,67 @@ const Loty = () => {
   .use(dasApi());
 
   
- const owner = publicKey("45UxpqwZFdNuvzbrde7yhTp4ZhJBjkH82y577B5ZB3A6");
+//  // Fetch all tradeable Lotl NFTs when page loads
+// useEffect(() => {
+//   const fetchTradeable = async () => {
+//     try {
+//       const assets = await das.searchAssets(umi, {
+//         creator: publicKey("HjB7oVk1Bvog9UVN6sPW6CTWMXMW2qE6cxSZ8GU8pf1w"),
+//         // sortBy: undefined,
+//       });
+//       console.log(assets);
+//       setTradeableAll(assets);
+//     } catch (error) {
+//       console.error("Error fetching collection:", error);
+//     }
+//   };
+//   // Only fetch if the wallet is connected
+//   if (wallet && wallet.publicKey && !tradeableAll.length) {
+//     fetchTradeable();
+//   }
+// }, [wallet, umi]);
+
 
 useEffect(() => {
-  const fetchCollectionData = async () => {
+  const fetchTradeable = async () => {
     try {
       const assets = await das.searchAssets(umi, {
-        creator: publicKey("HjB7oVk1Bvog9UVN6sPW6CTWMXMW2qE6cxSZ8GU8pf1w") // Ensure this public key is valid
+        creator: publicKey("HjB7oVk1Bvog9UVN6sPW6CTWMXMW2qE6cxSZ8GU8pf1w"),
       });
-      console.log(assets);
+
+      // Sort assets by the creation date
+      const sortedAssets = assets.sort((a, b) => {
+        const dateA = new Date(a.name); // Assuming "name" is the creation date
+        const dateB = new Date(b.name);
+        return dateB.getTime() - dateA.getTime(); // Sort in descending order
+      });
+
+      console.log(sortedAssets);
+      setTradeableAll(sortedAssets);
     } catch (error) {
       console.error("Error fetching collection:", error);
     }
   };
-
-  // Only fetch if the wallet is connected
-  if (wallet && wallet.publicKey) {
-    fetchCollectionData();
+  if (wallet && wallet.publicKey && !tradeableAll.length) {
+    fetchTradeable();
   }
 }, [wallet, umi]);
 
 
 
 //  const asset = await das.searchAssets(umi, {
-  // creator: publicKey("45UxpqwZFdNuvzbrde7yhTp4ZhJBjkH82y577B5ZB3A6"),
   // limit: 10,
-  // showDeleted: false,
-  // showPrivate: false,
-  // showUnverified: false,
-  // showPending: false,
-  // showRejected: false,
-  // showExtended: false,
-  // showData: false,
   // showFiles: false,
   // showMetadata: false,
-  // showTags: false,
   // showRoyalties: false,
   // showAttributes: false,
-  // showPreviews: false,
-  // showPreviewsData: false,
-  // showPreviewsFiles: false,
-  // showPreviewsMetadata: false,  
-  // showPreviewsTags: false,
   // showPreviewsRoyalties: false,
   // showPreviewsAttributes: false,
   // showPreviewsExtended: false,
   // showPreviewsDataExtended: false,
   // showPreviewsFilesExtended: false,
   // showPreviewsMetadataExtended: false,
-  // showPreviewsTagsExtended: false,
   // showPreviewsRoyaltiesExtended: false,
-  // showPreviewsAttributesExtended: false,
-  // showPreviewsExtendedExtended: false,
-  // showPreviewsDataExtendedExtended: false,
-  // showPreviewsFilesExtendedExtended: false,
-  // showPreviewsMetadataExtendedExtended: false,  
-  // showPreviewsTagsExtendedExtended: false,
-  // showPreviewsRoyaltiesExtendedExtended: false,
-  // showPreviewsAttributesExtendedExtended: false,
-
-
 // });
 
 
@@ -146,7 +143,6 @@ useEffect(() => {
 //         return;
 //     }
 
-//     // Collection ID (replace with your actual collection public key)
 //     const collectionId = umiPublicKey("HjB7oVk1Bvog9UVN6sPW6CTWMXMW2qE6cxSZ8GU8pf1w");
 
 //     try {
@@ -195,47 +191,26 @@ useEffect(() => {
                         <h2 className="text-xl font-semibold mb-4 text-center opacity-80"> Sanctuary for All</h2>
 
         <p>Coming soon</p>
-            {/* <div className="flex flex-col min-h-screen bg-gray-100 font-sans antialised">
+        
+            <div className="flex flex-col min-h-screen bg-gray-100 font-sans antialised">
                 <div className="container mx-auto mt-10 px-4 sm:px-0">
                     <div className="max-w-3xl mx-auto bg-white p-6 rounded-lg shadow-md">
                         <h1 className="text-2xl font-semibold mb-4 opacity-50 text-center">Lot-y</h1>
                         <h2 className="text-xl font-semibold mb-4 text-center opacity-80"> Sanctuary for All</h2>
-                        <h3 className="text-sm mb-8 text-center opacity-50"> current collection size: {collectionAll?.currentSize}</h3>
+                        {/* <h3 className="text-sm mb-8 text-center opacity-50"> current collection size: {collectionAll?.currentSize}</h3> */}
 
                         <ConnectWallet />
 
                         <div className="p-4">
-                        <div className="flex flex-col space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0">
-                        <button
-                              onClick={handleFetchAllClick}
-                              className='flex-1 bg-gradient-to-r from-pink-300 to-yellow-200 hover:from-green-300 hover:to-blue-300 text-blue-800 p-2 transition-all duration-200 border-2 border-transparent hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed'
-                              disabled={!wallet || !wallet.publicKey}
-                            >
-                              Show all 
-                            </button>
-                            <button
-                              onClick={handleFetchAllClick}
-                              className='flex-1 bg-gradient-to-r from-pink-300 to-yellow-200 hover:from-green-300 hover:to-blue-300 text-blue-800 p-2 transition-all duration-200 border-2 border-transparent hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed'
-                              disabled={!wallet || !wallet.publicKey}
-                            >
-                              Only Soulbound NFTs
-                            </button>
-                            <button
-                              onClick={handleFetchAllClick}
-                              className='flex-1 bg-gradient-to-r from-pink-300 to-yellow-200 hover:from-green-300 hover:to-blue-300 text-blue-800 p-2 transition-all duration-200 border-2 border-transparent hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed'
-                              disabled={!wallet || !wallet.publicKey}
-                            >
-                              Only tradeable NFTs
-                            </button>
-                          </div>
+
 
                           <div className='mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4'>
-                          {nftAssets.length > 0 ? (
-                                    nftAssets.map((nft, index) => (
-                                <div key={nft.assetPk} className='bg-white-100 rounded-lg p-4 shadow'>
-                                  <h2 className='text-md opacity-50 mb-2'>{nft.datum}</h2>
-
-                                  {nft.nftPic ? (
+                          {tradeableAll.length > 0 ? (
+                                    tradeableAll.map((asset, index) => (
+                                    <div key={asset.publicKey} className='bg-white-100 rounded-lg p-4 shadow'>
+                                  <h2 className='text-md opacity-50 mb-2'>{asset.name}</h2>
+                                  {/* const imageUrl = asset.attributes?.attributeList?.find(attr => attr.key === 'image')?.value;
+                                  {imageUrl ? (
                                     <img
                                       onClick={() => setSelectedImage(nft.nftPic)}
                                       width={150}
@@ -246,7 +221,7 @@ useEffect(() => {
                                     />
                                   ) : (
                                     <p>No image available</p>
-                                  )}
+                                  )} */}
 
                           <div className="mt-2 flex items-start space-x-1">
                           
@@ -257,7 +232,7 @@ useEffect(() => {
                             <FontAwesomeIcon icon={faQuestionCircle} className="h-4 w-4 text-gray-500" />
                           </button>
                             <button
-                              onClick={() => console.log(`Owner: ${nft.owner}`)}
+                              // onClick={() => console.log(`Owner: ${asset.owner}`)}
                               className="bg-white text-gray-600 p-1 text-xs rounded border border-gray-300 hover:bg-gray-100 transition opacitiy-50"
                             >
                               <FontAwesomeIcon icon={faHome} className="h-4 w-4 text-grey-500" />
@@ -278,7 +253,7 @@ useEffect(() => {
                           </div>
                         </div>
 
-                        {selectedImage && (
+                        {/* {selectedImage && (
                             <div className='fixed inset-0 flex justify-center items-center bg-black bg-opacity-50'>
                                 <div className='relative'>
                                     <img
@@ -294,12 +269,12 @@ useEffect(() => {
                                     </button>
                                 </div>
                             </div>
-                        )}
+                        )} */}
 
                     </div>
                 </div>
 
-            </div> */}
+            </div>
         </>
     );
 };

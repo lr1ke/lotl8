@@ -71,7 +71,6 @@ const Loti = () => {
             return {
                 name: asset.name,
                 owner: asset.owner,
-                href: `https://solscan.io/token/${asset.publicKey}?cluster=devnet`,
                 nftPic,
                 datum,
                 basisPoints,
