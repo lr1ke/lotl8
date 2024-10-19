@@ -10,6 +10,8 @@ import { walletAdapterIdentity } from '@metaplex-foundation/umi-signer-wallet-ad
     const umi = createUmi('https://api.devnet.solana.com')
     umi.use(walletAdapterIdentity(wallet));
 
+    let walletPublicKey = wallet.publicKey;
+
     const LotlCollectionPublicKey =  publicKey("HjB7oVk1Bvog9UVN6sPW6CTWMXMW2qE6cxSZ8GU8pf1w");
 
 
@@ -25,7 +27,6 @@ import { walletAdapterIdentity } from '@metaplex-foundation/umi-signer-wallet-ad
         name: datum,
         uri: metadataUri,
         asset: asset,
-        // collection: collection,
     
         plugins: [
             {
@@ -33,11 +34,11 @@ import { walletAdapterIdentity } from '@metaplex-foundation/umi-signer-wallet-ad
                 basisPoints: 2000,
                 creators: [
                         {
-                            address: asset.publicKey,
+                            address: wallet.publicKey,
                             percentage: 80,
                         },
                         {
-                            address: LotlCollectionPublicKey,
+                            address: publicKey("HjB7oVk1Bvog9UVN6sPW6CTWMXMW2qE6cxSZ8GU8pf1w"),
                             percentage: 20,
                         }
                     ],

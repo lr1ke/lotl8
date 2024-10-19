@@ -30,18 +30,13 @@ const Loti = () => {
     const [selectedImage, setSelectedImage] = useState<string | null>(null);//for zooming
     const [nftAssets, setNftAssets] = useState<NftAsset[]>([]);
     const wallet = useWallet();
-    const [selectedNft, setSelectedNft] = useState<NftAsset | null>(null);  // To track the selected NFT
 
 
 
     const handlefetchOwnerClick = async (event: React.FormEvent) => {
         event.preventDefault();
 
-        
-        if (!wallet || !wallet.publicKey) {
-            console.error('Wallet not connected or public key unavailable');
-            return;
-        }
+
         const umi = createUmi('https://api.devnet.solana.com');
         umi.use(walletAdapterIdentity(wallet));
 
@@ -50,7 +45,7 @@ const Loti = () => {
             return;
         }
 
-        const owner = umiPublicKey(wallet.publicKey);
+        let owner = umiPublicKey(wallet.publicKey);
         setOwner(owner);
 
 
@@ -59,8 +54,16 @@ const Loti = () => {
         const assetsByOwner = await fetchAssetsByOwner(umi, owner, {
             skipDerivePlugins: false,
         });
+        console.log("Assets by owner:", assetsByOwner);
+      // Sort assets by the creation date
+      const sortedAssets = assetsByOwner.sort((a, b) => {
+        const dateA = new Date(a.name); // Assuming "name" is the creation date
+        const dateB = new Date(b.name);
+        return dateB.getTime() - dateA.getTime(); // Sort in descending order
+      });
+
         // Extract NFT information and update the state
-        const fetchedAssets = assetsByOwner.map(asset => {
+        const fetchedAssets = sortedAssets.map(asset => {
             const imageAttr = asset.attributes?.attributeList?.find(attr => attr.key === 'image');
             const nftPic = imageAttr ? imageAttr.value : null;
             const datumAttr = asset.attributes?.attributeList?.find(attr => attr.key === 'datum');

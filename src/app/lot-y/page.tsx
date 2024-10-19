@@ -43,31 +43,63 @@ const Loty = () => {
   .use(dasApi());
 
 
-useEffect(() => {
-  const fetchTradeable = async () => {
-    try {
-      const assets = await das.searchAssets(umi, {
-        creator: publicKey("HjB7oVk1Bvog9UVN6sPW6CTWMXMW2qE6cxSZ8GU8pf1w"),
-      });
+// useEffect(() => {
+//   const fetchTradeable = async () => {
+//     try {
+//       const assets = await das.searchAssets(umi, {
+//         creator: publicKey("HjB7oVk1Bvog9UVN6sPW6CTWMXMW2qE6cxSZ8GU8pf1w"),
+//       });
 
-      // Sort assets by the creation date
-      const sortedAssets = assets.sort((a, b) => {
-        const dateA = new Date(a.name); // Assuming "name" is the creation date
-        const dateB = new Date(b.name);
-        return dateB.getTime() - dateA.getTime(); // Sort in descending order
-      });
+//       // Sort assets by the creation date
+//       const sortedAssets = assets.sort((a, b) => {
+//         const dateA = new Date(a.name); // Assuming "name" is the creation date
+//         const dateB = new Date(b.name);
+//         return dateB.getTime() - dateA.getTime(); // Sort in descending order
+//       });
 
+//       console.log(sortedAssets);
+//       setTradeableAll(sortedAssets);
+//     } catch (error) {
+//       console.error("Error fetching collection:", error);
+//     }
+//   };
+//   if (wallet && wallet.publicKey ) {
+//     fetchTradeable();
+//   }
+// }, [wallet, umi]);
+
+
+const handleFetchTradeableClick = async (event: React.FormEvent) => {
+  event.preventDefault();
+
+
+  // const wallet = useWallet();
+//   const umi = createUmi('https://api.devnet.solana.com')
+// .use(walletAdapterIdentity(wallet))
+// .use(dasApi());
+
+if (!wallet || !wallet.publicKey) {
+  console.error('Wallet not connected or public key unavailable');
+  return;
+}
+
+try {
+  // Fetch all tradeable assets
+    const assets = await das.searchAssets(umi, {
+      creator: publicKey("HjB7oVk1Bvog9UVN6sPW6CTWMXMW2qE6cxSZ8GU8pf1w"),
+    });
+    // Sort assets by the creation date
+    const sortedAssets = assets.sort((a, b) => {
+      const dateA = new Date(a.name); // Assuming "name" is the creation date
+      const dateB = new Date(b.name);
+      return dateB.getTime() - dateA.getTime(); // Sort in descending order
+    });
       console.log(sortedAssets);
       setTradeableAll(sortedAssets);
     } catch (error) {
       console.error("Error fetching collection:", error);
     }
   };
-  if (wallet && wallet.publicKey && !tradeableAll.length) {
-    fetchTradeable();
-  }
-}, [wallet, umi]);
-
 
 
     // for image zoom out
@@ -87,6 +119,13 @@ useEffect(() => {
                         {/* <h3 className="text-sm mb-8 text-center opacity-50"> current collection size: {collectionAll?.currentSize}</h3> */}
 
                         <ConnectWallet />
+                        <button
+                                    onClick={handleFetchTradeableClick}
+                                    className='flex-1 bg-gradient-to-r from-pink-300 to-yellow-200 hover:from-green-300 hover:to-blue-300 text-blue-800 p-2 transition-all duration-200 border-2 border-transparent hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed'
+                                    disabled={!wallet || !wallet.publicKey}
+                                >
+                                    Show all tradeable Lotl NFTs
+                                </button>
 
                         <div className="p-4">
 
