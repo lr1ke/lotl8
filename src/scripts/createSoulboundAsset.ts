@@ -8,19 +8,12 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 
-
-
 export const mintSouldbound = async (metadataUri: any, picUri: any, wallet: any) => {
 
-    
 
     const umi = createUmi('https://api.devnet.solana.com');
     umi.use(walletAdapterIdentity(wallet));
 
-
-
-    const collectionPublicKey =  publicKey("HjB7oVk1Bvog9UVN6sPW6CTWMXMW2qE6cxSZ8GU8pf1w");
-    const collection = await fetchCollection(umi, collectionPublicKey);
 
     let datum = formatDateTime(now());
     const asset = generateSigner(umi);
@@ -32,7 +25,6 @@ export const mintSouldbound = async (metadataUri: any, picUri: any, wallet: any)
         uri: metadataUri,
         asset: asset,
 
-        collection: collection, 
         plugins: [
             {
                 type: 'PermanentFreezeDelegate',
