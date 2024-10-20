@@ -12,7 +12,7 @@ import { walletAdapterIdentity } from '@metaplex-foundation/umi-signer-wallet-ad
 
     let walletPublicKey = wallet.publicKey;
 
-    const LotlCollectionPublicKey =  publicKey("HjB7oVk1Bvog9UVN6sPW6CTWMXMW2qE6cxSZ8GU8pf1w");
+    const lotlCollectionPublicKey =  publicKey("HjB7oVk1Bvog9UVN6sPW6CTWMXMW2qE6cxSZ8GU8pf1w");
 
 
 
@@ -34,11 +34,11 @@ import { walletAdapterIdentity } from '@metaplex-foundation/umi-signer-wallet-ad
                 basisPoints: 2000,
                 creators: [
                         {
-                            address: wallet.publicKey,
+                            address: walletPublicKey,
                             percentage: 80,
                         },
                         {
-                            address: publicKey("HjB7oVk1Bvog9UVN6sPW6CTWMXMW2qE6cxSZ8GU8pf1w"),
+                            address: lotlCollectionPublicKey ,
                             percentage: 20,
                         }
                     ],
