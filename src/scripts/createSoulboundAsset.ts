@@ -1,11 +1,8 @@
-import { generateSigner, publicKey, now, formatDateTime } from '@metaplex-foundation/umi';
-import { create, fetchAsset, fetchCollection, createCollection} from '@metaplex-foundation/mpl-core'
+import { generateSigner, now, formatDateTime } from '@metaplex-foundation/umi';
+import { create, fetchAsset } from '@metaplex-foundation/mpl-core'
 import { createUmi } from '@metaplex-foundation/umi-bundle-defaults';
 import { walletAdapterIdentity } from '@metaplex-foundation/umi-signer-wallet-adapters';
 import { base58 } from '@metaplex-foundation/umi/serializers';
-import dotenv from 'dotenv';
-// Load existing .env file
-dotenv.config();
 
 
 export const mintSouldbound = async (metadataUri: any, picUri: any, wallet: any) => {
